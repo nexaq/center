@@ -1,0 +1,72 @@
+import { api } from '~/api/config';
+import type {
+  ApplicationItem,
+  ApplicationWithAdminStatus,
+} from '~/api/application/types';
+
+export enum ApplicationStatus {
+  CHOOSE_PRICE = 'CHOOSE_PRICE',
+  ACCOUNT_DETAILS = 'ACCOUNT_DETAILS',
+  PAY_AGENT = 'PAY_AGENT',
+  MODERATION = 'MODERATION',
+  WAITING_DEPOSIT = 'WAITING_DEPOSIT',
+  IN_WORK = 'IN_WORK',
+  WON = 'WON',
+  LOST = 'LOST',
+  RECOMMENDATION = 'RECOMMENDATION',
+}
+
+export enum ApplicationAdminStatus {
+  CREATED = 'CREATED',
+  REVIEW = 'REVIEW',
+  DEPOSIT_DETAILS = 'DEPOSIT_DETAILS',
+  BID_CORRECTION = 'BID_CORRECTION',
+  IN_WORK = 'IN_WORK',
+  RESULT = 'RESULT',
+}
+
+export enum ApplicationModerationStatus {
+  REVIEW = 'REVIEW',
+  BID_CORRECTION = 'BID_CORRECTION',
+  DEPOSIT_DETAILS = 'DEPOSIT_DETAILS',
+}
+
+export const getAdminStatus = (
+  status: ApplicationStatus,
+  moderationStatus: ApplicationModerationStatus,
+): ApplicationAdminStatus => {
+  if (
+    [
+      ApplicationStatus.CHOOSE_PRICE,
+      ApplicationStatus.ACCOUNT_DETAILS,
+      ApplicationStatus.PAY_AGENT,
+    ].includes(status)
+  ) {
+    return ApplicationAdminStatus.CREATED;
+  } else if (ApplicationStatus.MODERATION) {
+    if (moderationStatus === ApplicationModerationStatus.DEPOSIT_DETAILS) {
+      return ApplicationAdminStatus.DEPOSIT_DETAILS;
+    }
+    if (moderationStatus === ApplicationModerationStatus.BID_CORRECTION) {
+      return ApplicationAdminStatus.BID_CORRECTION;
+    }
+    return ApplicationAdminStatus.REVIEW;
+  } else if (
+    [ApplicationStatus.IN_WORK, ApplicationStatus.WAITING_DEPOSIT].includes(
+      status,
+    )
+  ) {
+    return ApplicationAdminStatus.IN_WORK;
+  } else if ([ApplicationStatus.WON, ApplicationStatus.LOST].includes(status)) {
+    return ApplicationAdminStatus.RESULT;
+  }
+  throw Error('not admin status');
+};
+
+export const getList = async (): Promise<ApplicationWithAdminStatus[]> => {
+  const { data } = await api.get<ApplicationItem[]>('/center/application');
+  return data.map((i) => ({
+    ...i,
+    adminStatus: getAdminStatus(i.status, i.moderationStatus),
+  }));
+};
