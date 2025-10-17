@@ -1,28 +1,31 @@
 import st from './BidCorrection.module.scss';
 import PriceDescription from '~/routes/application/components/PriceDescription/PriceDescription';
 import type { LotModel } from '~/api/lot/types';
-import {Alert, Button, Card, Descriptions, Flex, Space} from 'antd';
+import { Alert, Card, Descriptions, Flex, Space } from 'antd';
 import React from 'react';
 import formatNumber from '~/helpers/formatNumber';
-import { useApplication } from '~/hooks/useApplication/useApplication';
 import Editable from '~/routes/application/components/Review/Editable/Editable';
 import type { ApplicationWithAdminStatus } from '~/api/application/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { bidCorrections } from '~/api/application/bidCorrection';
 import { unformat } from '@react-input/number-format';
-import ApplicationCancel from "~/components/ApplicationCancel/ApplicationCancel";
-import NextStepButton from "~/routes/application/components/Distributor/BidCorrection/NextStepButton/NextStepButton";
+import ApplicationCancel from '~/components/ApplicationCancel/ApplicationCancel';
+import NextStepButton from '~/routes/application/components/Distributor/BidCorrection/NextStepButton/NextStepButton';
 
-function EditStepPrice({
+export function EditStepPrice({
   application,
   defaultValue,
   startPrice,
   percentage = false,
+  editable = true,
+  withPercentage = false,
 }: {
   defaultValue: number;
   application: ApplicationWithAdminStatus;
   startPrice: number;
   percentage?: boolean;
+  editable?: boolean;
+  withPercentage?: boolean;
 }) {
   const queryClient = useQueryClient();
 
@@ -43,8 +46,16 @@ function EditStepPrice({
     },
   );
 
+  const correctionValue = percentage
+    ? application.stepPriceCorrection !== null
+      ? (application.stepPriceCorrection / startPrice) * 100
+      : null
+    : application.stepPriceCorrection;
+
   return (
     <Editable
+      editable={editable}
+      extra={withPercentage && !percentage ? `(${((correctionValue ?? defaultValue) / startPrice) * 100}%)` : undefined}
       onSubmit={async (value) => {
         return mutate({
           stepPrice: percentage ? (value / 100) * startPrice : value,
@@ -88,18 +99,12 @@ function EditStepPrice({
       defaultValue={
         percentage ? (defaultValue / startPrice) * 100 : defaultValue
       }
-      correctionValue={
-        percentage
-          ? application.stepPriceCorrection !== null
-            ? (application.stepPriceCorrection / startPrice) * 100
-            : null
-          : application.stepPriceCorrection
-      }
+      correctionValue={correctionValue}
     />
   );
 }
 
-const WantPrice = ({
+export const WantPrice = ({
   application,
   lot,
 }: {
@@ -132,19 +137,23 @@ const WantPrice = ({
   }
 };
 
-const BidCorrection = ({ lot }: { lot: LotModel }) => {
-  const { data: application } = useApplication();
-
-  if (!application) {
-    return null;
-  }
-
+const BidCorrection = ({
+  lot,
+  application,
+}: {
+  lot: LotModel;
+  application: ApplicationWithAdminStatus;
+}) => {
   return (
     <div className={st.main}>
       <Space direction="vertical" size={16} style={{ width: '100%' }}>
-        <Card>
-          <PriceDescription lot={lot} title={'Исходная стоимость'} />
-        </Card>
+        {/*<Card>*/}
+        {/*  <PriceDescription*/}
+        {/*    lot={lot}*/}
+        {/*    title={'Исходная стоимость'}*/}
+        {/*    application={application}*/}
+        {/*  />*/}
+        {/*</Card>*/}
         <Alert
           showIcon
           message="Внимательно проверь!"
@@ -183,7 +192,7 @@ const BidCorrection = ({ lot }: { lot: LotModel }) => {
         </Card>
         <Card>
           <Flex gap={8} justify={'end'}>
-            <ApplicationCancel />
+            <ApplicationCancel application={application} />
             <NextStepButton application={application} />
           </Flex>
         </Card>

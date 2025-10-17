@@ -1,8 +1,9 @@
 import { Button } from 'antd';
 import React, { useState } from 'react';
 import ApplicationCancelModal from '~/components/ApplicationCancel/ApplicationCancelModal.tsx/ApplicationCancelModal';
+import type {ApplicationWithAdminStatus} from "~/api/application/types";
 
-const ApplicationCancel = ({}: {}) => {
+const ApplicationCancel = ({ application }: { application: ApplicationWithAdminStatus }) => {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -15,7 +16,7 @@ const ApplicationCancel = ({}: {}) => {
       >
         Отклонить заявку
       </Button>
-      <ApplicationCancelModal setOpen={setOpen} open={open} />
+      <ApplicationCancelModal setOpen={setOpen} open={open} application={application} />
     </>
   );
 };

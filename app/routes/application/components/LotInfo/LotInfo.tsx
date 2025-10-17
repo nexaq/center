@@ -1,16 +1,18 @@
-import {Button, Card, Descriptions, Flex, Space, Typography} from 'antd';
+import { Card, Descriptions, Space, Typography } from 'antd';
 import React from 'react';
 import type { ApplicationWithAdminStatus } from '~/api/application/types';
-import type {LotModel} from "~/api/lot/types";
-import {useNavigate} from "react-router";
-import formatNumber from "~/helpers/formatNumber";
-import PriceDescription from "~/routes/application/components/PriceDescription/PriceDescription";
+import type { LotModel } from '~/api/lot/types';
+import formatNumber from '~/helpers/formatNumber';
+import PriceDescription from '~/routes/application/components/PriceDescription/PriceDescription';
 
 const { Link, Text } = Typography;
 
 const round = (num: number) => Math.round((num + Number.EPSILON) * 100) / 100;
 
-export const displayDeposit = (deposit: number | undefined, startPrice: number) => {
+export const displayDeposit = (
+  deposit: number | undefined,
+  startPrice: number,
+) => {
   if (!deposit) {
     return (
       <Text type={'danger'} strong>
@@ -21,16 +23,24 @@ export const displayDeposit = (deposit: number | undefined, startPrice: number) 
 
   const percentage = deposit / startPrice;
 
-  return <>{formatNumber(deposit)} ({round(percentage * 100)}%)</>;
+  return (
+    <>
+      {formatNumber(deposit)} ({round(percentage * 100)}%)
+    </>
+  );
 };
 
 export const auctionStepPrice = (stepPrice?: number) => {
   if (!stepPrice) {
-    return <Text type={'danger'} strong>Нет шага аукциона!</Text>
+    return (
+      <Text type={'danger'} strong>
+        Нет шага аукциона!
+      </Text>
+    );
   }
 
   return formatNumber(stepPrice);
-}
+};
 
 const LotInfo = ({
   application,
@@ -53,7 +63,10 @@ const LotInfo = ({
               <Link
                 onClick={(e) => {
                   e.preventDefault();
-                  window.open(`https://mercx.ru/lot/${application.lotCode}`, "_blank");
+                  window.open(
+                    `https://mercx.ru/lot/${application.lotCode}`,
+                    '_blank',
+                  );
                 }}
                 style={{ fontWeight: 500 }}
               >
@@ -85,12 +98,14 @@ const LotInfo = ({
         </Space>
       </Card>
       <Card>
-        <PriceDescription lot={lot} />
+        <PriceDescription lot={lot} application={application} />
       </Card>
       <Card>
         <Space direction={'vertical'} size={30}>
           <Descriptions title="Описание" column={1}>
-            <Descriptions.Item label="Стоимость">{lot.subject}</Descriptions.Item>
+            <Descriptions.Item label="Стоимость">
+              {lot.subject}
+            </Descriptions.Item>
           </Descriptions>
         </Space>
       </Card>

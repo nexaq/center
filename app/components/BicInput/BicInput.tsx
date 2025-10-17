@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {type AutoCompleteProps, Flex} from 'antd';
 import { AutoComplete } from 'antd';
 import {suggestBank, type SuggestBankItem} from "~/api/dadata/suggestBank";
@@ -16,7 +16,7 @@ const renderItem = (item: SuggestBankItem) => ({
   ),
 });
 
-const BicInput = ({ onSelect }: { onSelect?: (data: SuggestBankItem) => void }) => {
+const BicInput = memo(({ onSelect, setValue }: { onSelect?: (data: SuggestBankItem) => void, setValue: (v: string) => void }) => {
   const [options, setOptions] = React.useState<AutoCompleteProps['options']>(
     [],
   );
@@ -29,6 +29,13 @@ const BicInput = ({ onSelect }: { onSelect?: (data: SuggestBankItem) => void }) 
   };
   return (
     <AutoComplete
+      style={{
+        width: "100%"
+      }}
+      onChange={(e) => {
+        setValue(e);
+      }}
+      maxLength={9}
       onSearch={handleSearch}
       onSelect={(_, option) => {
         onSelect?.(option.extra)
@@ -36,6 +43,6 @@ const BicInput = ({ onSelect }: { onSelect?: (data: SuggestBankItem) => void }) 
       options={options}
     />
   );
-};
+});
 
 export default BicInput;

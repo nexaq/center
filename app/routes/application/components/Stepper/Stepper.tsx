@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { Steps } from 'antd';
 import type { ApplicationWithAdminStatus } from '~/api/application/types';
-import { ApplicationAdminStatus } from '~/api/application/getList';
+import {
+  ApplicationAdminStatus,
+  ApplicationStatus,
+} from '~/api/application/getList';
 
 interface StepperProps {
   application: ApplicationWithAdminStatus;
@@ -24,6 +27,11 @@ export default function Stepper({ application }: StepperProps) {
       ? 3
       : current;
 
+  current =
+    application.adminStatus === ApplicationAdminStatus.IN_WORK ? 4 : current;
+
+  current =
+    application.adminStatus === ApplicationAdminStatus.RESULT ? 5 : current;
 
   const getDescription = (text: string, number: number) => {
     if (application.isRejected && number === current) {
@@ -31,6 +39,13 @@ export default function Stepper({ application }: StepperProps) {
     }
 
     return text;
+  };
+
+  const getResultDescription = () => {
+    if (application.adminStatus === ApplicationAdminStatus.RESULT) {
+      return application.status === ApplicationStatus.WON ? 'Победил' : 'Проиграл';
+    }
+    return null;
   };
 
   return (
@@ -63,6 +78,13 @@ export default function Stepper({ application }: StepperProps) {
         },
         {
           title: 'Готов',
+          description: (
+            <>
+              {application.adminStatus === ApplicationAdminStatus.RESULT
+                ? getResultDescription()
+                : ''}
+            </>
+          ),
         },
       ]}
     />

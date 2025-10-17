@@ -43,7 +43,9 @@ export const getAdminStatus = (
     ].includes(status)
   ) {
     return ApplicationAdminStatus.CREATED;
-  } else if (ApplicationStatus.MODERATION) {
+  }
+
+  if (status === ApplicationStatus.MODERATION) {
     if (moderationStatus === ApplicationModerationStatus.DEPOSIT_DETAILS) {
       return ApplicationAdminStatus.DEPOSIT_DETAILS;
     }
@@ -51,13 +53,17 @@ export const getAdminStatus = (
       return ApplicationAdminStatus.BID_CORRECTION;
     }
     return ApplicationAdminStatus.REVIEW;
-  } else if (
+  }
+
+  if (
     [ApplicationStatus.IN_WORK, ApplicationStatus.WAITING_DEPOSIT].includes(
       status,
     )
   ) {
     return ApplicationAdminStatus.IN_WORK;
-  } else if ([ApplicationStatus.WON, ApplicationStatus.LOST].includes(status)) {
+  }
+
+  if ([ApplicationStatus.WON, ApplicationStatus.LOST].includes(status)) {
     return ApplicationAdminStatus.RESULT;
   }
   throw Error('not admin status');

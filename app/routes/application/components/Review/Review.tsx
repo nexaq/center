@@ -1,15 +1,11 @@
 import type { ApplicationWithAdminStatus } from '~/api/application/types';
 import type { LotModel } from '~/api/lot/types';
-import {
-  auctionStepPrice,
-  displayDeposit,
-} from '~/routes/application/components/LotInfo/LotInfo';
 import { Alert, Card, Descriptions, Flex, Space, Typography } from 'antd';
-import formatNumber from '~/helpers/formatNumber';
 import React from 'react';
 import PublicOfferTable from '~/components/PublicOfferTable/PublicOfferTable';
 import ApplicationCancel from '~/components/ApplicationCancel/ApplicationCancel';
 import AcceptButton from '~/routes/application/components/Review/AcceptButton/AcceptButton';
+import PriceDescription from '~/routes/application/components/PriceDescription/PriceDescription';
 
 const { Link } = Typography;
 
@@ -20,12 +16,6 @@ const Review = ({
   application: ApplicationWithAdminStatus;
   lot: LotModel;
 }) => {
-  // const mutation = useMutation({
-  //   mutationFn: (newTodo) => {
-  //     // return axios.post('/todos', newTodo);
-  //   },
-  // });
-
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <Alert
@@ -85,22 +75,7 @@ const Review = ({
       </Card>
       <Card>
         <Space direction={'vertical'} size={30}>
-          <Descriptions title="Стоимость" column={2}>
-            <Descriptions.Item label="Стоимость">
-              {formatNumber(lot.currentPrice)}
-            </Descriptions.Item>
-            <Descriptions.Item label="Задаток">
-              {displayDeposit(lot.deposit, lot.startPrice)}
-            </Descriptions.Item>
-            <Descriptions.Item label="Начальная цена">
-              {formatNumber(lot.startPrice)}
-            </Descriptions.Item>
-            {lot.sale.type === 'AUCTION' && (
-              <Descriptions.Item label="Шаг аукциона">
-                {auctionStepPrice(lot.stepPrice)}
-              </Descriptions.Item>
-            )}
-          </Descriptions>
+          <PriceDescription lot={lot} application={application} />
         </Space>
       </Card>
       {lot.sale.type === 'PUBLIC_OFFER' && (
@@ -119,7 +94,7 @@ const Review = ({
       </Card>
       <Card>
         <Flex gap="small" justify={'right'} wrap>
-          <ApplicationCancel />
+          <ApplicationCancel application={application} />
           <AcceptButton application={application} />
         </Flex>
       </Card>

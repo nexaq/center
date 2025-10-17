@@ -4,19 +4,21 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '~/api/config';
 import { useApplication } from '~/hooks/useApplication/useApplication';
 import { isAxiosError } from 'axios';
+import type { ApplicationWithAdminStatus } from '~/api/application/types';
 
 const { TextArea } = Input;
 
 const ApplicationCancelModal = ({
   open,
   setOpen,
+  application,
 }: {
   open: boolean;
   setOpen: (v: boolean) => void;
+  application: ApplicationWithAdminStatus;
 }) => {
   const [form] = Form.useForm();
 
-  const { data: application } = useApplication();
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation<void, Error, { id: number; reason: string }>({
@@ -33,7 +35,7 @@ const ApplicationCancelModal = ({
       ) {
         alert(err.response.data.message);
         return queryClient.invalidateQueries({
-          queryKey: ['application', application?.id],
+          queryKey: ['application', application.id],
           exact: true,
         });
       }
@@ -42,7 +44,7 @@ const ApplicationCancelModal = ({
     onSuccess: () => {
       setOpen(false);
       return queryClient.invalidateQueries({
-        queryKey: ['application', application?.id],
+        queryKey: ['application', application.id],
         exact: true,
       });
     },

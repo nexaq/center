@@ -25,6 +25,8 @@ export interface ApplicationItem {
   isRejected: boolean;
   userPrice: number | null;
   stepPriceCorrection: number | null;
+  accountDetails: string | null;
+  depositDetails: string | null;
 }
 
 export type ApplicationWithAdminStatus = ApplicationItem & {

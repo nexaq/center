@@ -1,10 +1,9 @@
-import st from './AcceptModal.module.scss';
-import { Form, Modal, Select } from 'antd';
+import { App, Modal } from 'antd';
 import React from 'react';
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {api} from "~/api/config";
-import {isAxiosError} from "axios";
-import type {ApplicationWithAdminStatus} from "~/api/application/types";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '~/api/config';
+import { isAxiosError } from 'axios';
+import type { ApplicationWithAdminStatus } from '~/api/application/types';
 
 const AcceptModal = ({
   open,
@@ -15,6 +14,7 @@ const AcceptModal = ({
   setOpen: (v: boolean) => void;
   application: ApplicationWithAdminStatus;
 }) => {
+  const { message } = App.useApp();
   const queryClient = useQueryClient();
   const { isPending, mutate } = useMutation<void, unknown, { id: number }>({
     mutationFn: async ({ id }) => {
@@ -23,18 +23,22 @@ const AcceptModal = ({
       );
       return data;
     },
-    mutationKey:  ['application'],
+    mutationKey: ['application'],
     onError: (err) => {
       if (isAxiosError(err) && err.status === 400) {
         alert(err.response?.data.message ?? err.status);
       } else {
-        alert('Произошла ошибка')
+        alert('Произошла ошибка');
       }
     },
     onSuccess: () => {
       setOpen(false);
-      queryClient.invalidateQueries({ queryKey: ['application', application.id] })
-    }
+      message.success('Успешно!');
+      return queryClient.invalidateQueries({
+        queryKey: ['application', application.id],
+        exact: true,
+      });
+    },
   });
 
   return (
@@ -54,8 +58,7 @@ const AcceptModal = ({
       }}
       cancelText="Отмена"
     >
-      Вы уверены что все поля лота и торгов правильны?
-      Дейстие нельзя отменить.
+      Вы уверены что все поля корректны? Дейстие нельзя отменить.
     </Modal>
   );
 };

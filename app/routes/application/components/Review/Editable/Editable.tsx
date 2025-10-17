@@ -1,12 +1,10 @@
 import st from './Editable.module.scss';
 import { EditOutlined } from '@ant-design/icons';
 import { Form, Input, Modal, Typography } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import CurrencyInput from '~/components/CurrencyInput/CurrencyInput';
 import _ from 'lodash';
 import { format, unformat } from '@react-input/number-format';
-import { useMutation } from '@tanstack/react-query';
-import { bidCorrections } from '~/api/application/bidCorrection';
 import type { Rule } from 'rc-field-form/lib/interface';
 
 const { Link } = Typography;
@@ -83,6 +81,8 @@ const Editable = ({
   label,
   rules,
   onSubmit,
+  editable = true,
+  extra,
 }: {
   defaultValue: string | number | null;
   correctionValue: number | null;
@@ -91,6 +91,8 @@ const Editable = ({
   label: string;
   rules?: Rule[];
   onSubmit: (value: number) => Promise<void>;
+  editable?: boolean;
+  extra?: string;
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -107,15 +109,20 @@ const Editable = ({
   return (
     <div className={st.main}>
       {correctionValue ? <del>{defaultValueDisplay}</del> : defaultValueDisplay}{' '}
-      {correctionValue && <strong>{correctionValue}</strong>}{' '}
-      <Link
-        onClick={(e) => {
-          e.preventDefault();
-          setOpen(true);
-        }}
-      >
-        <EditOutlined />
-      </Link>
+      {correctionValue && (
+        <strong>{format(correctionValue, { locales: 'ru' })}</strong>
+      )}{' '}
+      {extra && <strong>{extra}</strong>}
+      {editable && (
+        <Link
+          onClick={(e) => {
+            e.preventDefault();
+            setOpen(true);
+          }}
+        >
+          <EditOutlined />
+        </Link>
+      )}
       {open && (
         <ModalEdit
           onSubmit={onSubmit}
