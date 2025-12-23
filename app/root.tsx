@@ -11,8 +11,9 @@ import type { Route } from './+types/root';
 import st from './app.module.scss';
 import { QueryClient } from '@tanstack/query-core';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { App as AntdApp } from "antd";
+import {App as AntdApp, ConfigProvider, theme} from 'antd';
 import '@ant-design/v5-patch-for-react-19';
+import ruRu from 'antd/locale/ru_RU';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -48,12 +49,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
 const queryClient = new QueryClient();
 
 export default function App() {
+  const { token } = theme.useToken();
   return (
-    <div className={st.layout}>
+    <div
+      className={st.layout}
+      style={{
+        boxShadow: token.boxShadow,
+      }}
+    >
       <AntdApp>
-        <QueryClientProvider client={queryClient}>
-          <Outlet />
-        </QueryClientProvider>
+        <ConfigProvider locale={ruRu}>
+          <QueryClientProvider client={queryClient}>
+            <Outlet />
+          </QueryClientProvider>
+        </ConfigProvider>
       </AntdApp>
     </div>
   );

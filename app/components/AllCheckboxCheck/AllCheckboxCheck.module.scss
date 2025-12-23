@@ -1,0 +1,12 @@
+.labelWithCheckbox {
+  display: flex;
+  gap: 10px;
+  &Error {
+    color: red;
+  }
+}
+.checkbox {
+  :global(.ant-checkbox-inner) {
+    border-color: #ff4f4f !important;
+  }
+}

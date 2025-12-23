@@ -1,27 +1,28 @@
 import React from 'react';
-import {Alert, Space, Table, Tag} from 'antd';
 import type { TableProps } from 'antd';
+import { Alert, Table } from 'antd';
 import type { PriceTableItem } from '~/api/lot/types';
-import formatNumber from "~/helpers/formatNumber";
-import dayjs from "dayjs";
-
+import formatNumber from '~/helpers/formatNumber';
+import dayjs from 'dayjs';
+import { LabelWithCheckbox } from '~/components/AllCheckboxCheck/AllCheckboxCheckWrapper';
+import st from './PublicOfferTable.module.scss';
 
 const columns: TableProps<PriceTableItem>['columns'] = [
   {
-    title: 'С',
+    title: 'Начало',
     dataIndex: 'begin',
     key: 'begin',
     render: (value) => {
-      return <>{dayjs(value).format('DD.MM.YYYY HH:mm')}</>
-    }
+      return <>{dayjs(value).format('DD.MM.YYYY HH:mm')}</>;
+    },
   },
   {
-    title: 'По',
+    title: 'Конец',
     dataIndex: 'end',
     key: 'end',
     render: (value) => {
-      return <>{dayjs(value).format('DD.MM.YYYY HH:mm')}</>
-    }
+      return <>{dayjs(value).format('DD.MM.YYYY HH:mm')}</>;
+    },
   },
   {
     title: 'Цена',
@@ -29,8 +30,8 @@ const columns: TableProps<PriceTableItem>['columns'] = [
     key: 'price',
     align: 'right',
     render: (value) => {
-      return <>{formatNumber(value)}</>
-    }
+      return <>{formatNumber(value)}</>;
+    },
   },
   {
     title: 'Задаток',
@@ -38,27 +39,41 @@ const columns: TableProps<PriceTableItem>['columns'] = [
     key: 'deposit',
     align: 'right',
     render: (value) => {
-      return <>{formatNumber(value)}</>
-    }
+      return <>{formatNumber(value)}</>;
+    },
   },
 ];
 
-
-
-const PublicOfferTable = ({ table }: {
-  table?: PriceTableItem[];
-}) => {
+const PublicOfferTable = ({ table }: { table?: PriceTableItem[] }) => {
   if (!table) {
-    return <Alert message={'Нет талицы с периодами'} description={'Сообщите администратору'} type={'error'} />
+    return (
+      <Alert
+        message={'Нет талицы с периодами'}
+        description={'Сообщите администратору'}
+        type={'error'}
+      />
+    );
   }
 
   if (!table.length) {
-    return <Alert message={'Талица с периодами пуста'} description={'Сообщите администратору'} type={'error'} />
+    return (
+      <Alert
+        message={'Талица с периодами пуста'}
+        description={'Сообщите администратору'}
+        type={'error'}
+      />
+    );
   }
 
-
   return (
-    <Table<PriceTableItem> pagination={false} columns={columns} dataSource={table} />
+    <div className={st.wrapper}>
+      <LabelWithCheckbox label={'Табцлиа'} />
+      <Table<PriceTableItem>
+        pagination={false}
+        columns={columns}
+        dataSource={table}
+      />
+    </div>
   );
 };
 

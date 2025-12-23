@@ -8,6 +8,7 @@ import {
   EditStepPrice,
   WantPrice,
 } from '~/routes/application/components/Distributor/BidCorrection/BidCorrection';
+import {LabelWithCheckbox} from "~/components/AllCheckboxCheck/AllCheckboxCheckWrapper";
 
 const PriceDescription = ({
   lot,
@@ -20,17 +21,17 @@ const PriceDescription = ({
 }) => {
   return (
     <Descriptions title={title ?? 'Стоимость'} column={2}>
-      <Descriptions.Item label="Стоимость">
+      <Descriptions.Item label={<LabelWithCheckbox label={'Текущая цена'} />}>
         {formatNumber(lot.currentPrice)}
       </Descriptions.Item>
-      <Descriptions.Item label="Задаток">
+      <Descriptions.Item label={<LabelWithCheckbox label={"Задаток"} />}>
         {displayDeposit(lot.deposit, lot.startPrice)}
       </Descriptions.Item>
-      <Descriptions.Item label="Начальная цена">
+      <Descriptions.Item label={<LabelWithCheckbox label={"Начальная цена"} />}>
         {formatNumber(lot.startPrice)}
       </Descriptions.Item>
       {lot.sale.type === 'AUCTION' && (
-        <Descriptions.Item label="Шаг аукциона">
+        <Descriptions.Item label={<LabelWithCheckbox label={"Шаг аукциона"} />}>
           <EditStepPrice
             withPercentage={true}
             editable={false}
@@ -41,7 +42,7 @@ const PriceDescription = ({
         </Descriptions.Item>
       )}
       {application.userPrice && (
-        <Descriptions.Item label={'Желаемая стоимость'}>
+        <Descriptions.Item label={<LabelWithCheckbox label={"Цена принципала"} />}>
           <WantPrice lot={lot} application={application} />
         </Descriptions.Item>
       )}

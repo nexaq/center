@@ -11,7 +11,7 @@ import {
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import Navigation from '~/routes/application/components/Navigation/Navigation';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { isAxiosError } from 'axios';
 import type { ApplicationWithAdminStatus } from '~/api/application/types';
 import { getLot } from '~/api/lot/getLot';
@@ -21,6 +21,7 @@ import AccountInfo from '~/routes/application/components/AccountInfo/AccountInfo
 import distributor from '~/routes/application/components/Distributor/Distributor';
 import { useApplication } from '~/hooks/useApplication/useApplication';
 import Accounts from '~/routes/application/components/Accounts/Accounts';
+import Actions from '~/routes/application/components/Actions/Actions';
 
 const { Title } = Typography;
 
@@ -62,7 +63,7 @@ const TabDivider = ({
     },
     {
       key: '5',
-      label: 'Счета',
+      label: 'Задаток',
       children: <Accounts application={application} />,
     },
   ];
@@ -135,9 +136,21 @@ export default function Application() {
     <div>
       <Space direction="vertical" size={15} style={{ width: '100%' }}>
         <Navigation />
-        <Space direction="vertical" size={0} style={{ width: '100%' }}>
+        <Space direction="vertical" size={14} style={{ width: '100%' }}>
           <Stepper application={application} />
-          <Title level={3}>{lot?.title}</Title>
+          <Space direction={'vertical'} size={2}>
+            <div>
+              <b>
+                <Link to={lot.platformLotLink} target={'_blank'}>
+                  {application.saleNumber}
+                </Link>
+              </b>
+            </div>
+            <Title level={4} style={{ margin: 0 }}>
+              {lot?.title}
+            </Title>
+          </Space>
+          <Actions lot={lot} application={application} />
         </Space>
         <TabDivider application={application} lot={lot} />
       </Space>

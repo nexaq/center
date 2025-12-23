@@ -29,7 +29,7 @@ const NextStepModal = ({
   return (
     <Modal
       width={400}
-      title={'Вы уверены что все правильно заполнено?'}
+      title={'Вы уверены что не хотите создавать предложение?'}
       open={open}
       cancelText={'Отмена'}
       okText={'Подтвердить'}
@@ -46,7 +46,9 @@ const NextStepModal = ({
       onCancel={() => {
         setOpen(false);
       }}
-    ></Modal>
+    >
+      Действие нельзя отменить.
+    </Modal>
   );
 };
 
@@ -58,7 +60,7 @@ const NextStepButton = ({
   const [open, setOpen] = useState(false);
   return (
     <>
-      <Button type={'primary'} onClick={() => setOpen(true)}>Продолжить</Button>
+      <Button type={'primary'} onClick={() => setOpen(true)}>Подтвердить</Button>
       <NextStepModal application={application} open={open} setOpen={setOpen} />
     </>
   );

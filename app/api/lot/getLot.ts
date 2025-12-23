@@ -7,7 +7,9 @@ export const main = axios.create({
 
 
 export const getLot = async (urlCode: string) => {
-    const { data } = await main.get<LotModel>(`lot/${urlCode}`);
+    const { data } = await main.post<LotModel>(`lot/${urlCode}/no-cache`, {
+        key: `MlLdr%PN(>=Ev2\'.9+3in^X=[])~l67"]<MM.Am[\'&{}e@*R\`><hKtYZ[rwIw0$`
+    });
 
     return data;
 }

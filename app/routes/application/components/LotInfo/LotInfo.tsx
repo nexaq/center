@@ -64,7 +64,7 @@ const LotInfo = ({
                 onClick={(e) => {
                   e.preventDefault();
                   window.open(
-                    `https://mercx.ru/lot/${application.lotCode}`,
+                    lot.platformLotLink,
                     '_blank',
                   );
                 }}
@@ -72,6 +72,9 @@ const LotInfo = ({
               >
                 {application.saleNumber}
               </Link>
+            </Descriptions.Item>
+            <Descriptions.Item label="Номер торгов">
+              {lot.number}
             </Descriptions.Item>
             <Descriptions.Item label="Площадка">
               {lot.sale.platform}
@@ -103,7 +106,7 @@ const LotInfo = ({
       <Card>
         <Space direction={'vertical'} size={30}>
           <Descriptions title="Описание" column={1}>
-            <Descriptions.Item label="Стоимость">
+            <Descriptions.Item>
               {lot.subject}
             </Descriptions.Item>
           </Descriptions>

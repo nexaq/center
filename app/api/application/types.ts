@@ -10,6 +10,27 @@ interface User {
   createdAt: string;
 }
 
+export interface ReturnDepositDetails {
+  bic: number;
+  name: string;
+  bankName: string;
+  accountNumber: number;
+  correspondentAccount: number;
+}
+
+export interface DepositDetails {
+  bic: string;
+  inn?: string | null;
+  kpp?: string | null;
+  sum: number;
+  name: string;
+  account: string;
+  purpose: string;
+  bankName: string;
+  corrAccount: string;
+  isOrganization: boolean;
+}
+
 export interface ApplicationItem {
   id: number;
   userId: number;
@@ -24,9 +45,10 @@ export interface ApplicationItem {
   lotCode: string;
   isRejected: boolean;
   userPrice: number | null;
+  paymentFile: string | null;
   stepPriceCorrection: number | null;
-  accountDetails: string | null;
-  depositDetails: string | null;
+  returnDepositDetails: ReturnDepositDetails | null;
+  depositDetails: DepositDetails | null;
 }
 
 export type ApplicationWithAdminStatus = ApplicationItem & {

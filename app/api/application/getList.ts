@@ -20,14 +20,12 @@ export enum ApplicationAdminStatus {
   CREATED = 'CREATED',
   REVIEW = 'REVIEW',
   DEPOSIT_DETAILS = 'DEPOSIT_DETAILS',
-  BID_CORRECTION = 'BID_CORRECTION',
   IN_WORK = 'IN_WORK',
   RESULT = 'RESULT',
 }
 
 export enum ApplicationModerationStatus {
   REVIEW = 'REVIEW',
-  BID_CORRECTION = 'BID_CORRECTION',
   DEPOSIT_DETAILS = 'DEPOSIT_DETAILS',
 }
 
@@ -48,9 +46,6 @@ export const getAdminStatus = (
   if (status === ApplicationStatus.MODERATION) {
     if (moderationStatus === ApplicationModerationStatus.DEPOSIT_DETAILS) {
       return ApplicationAdminStatus.DEPOSIT_DETAILS;
-    }
-    if (moderationStatus === ApplicationModerationStatus.BID_CORRECTION) {
-      return ApplicationAdminStatus.BID_CORRECTION;
     }
     return ApplicationAdminStatus.REVIEW;
   }

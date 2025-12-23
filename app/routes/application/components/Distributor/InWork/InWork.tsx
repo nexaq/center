@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '~/api/config';
 import type { ApplicationWithAdminStatus } from '~/api/application/types';
 import { ConfirmModal } from '~/routes/application/components/Distributor/DepositDetails/DepositDetails';
+import DepositStatusAlert from "~/routes/application/components/DepositStatusAlert/DepositStatusAlert";
 
 const InWork = ({
   application,
@@ -37,66 +38,72 @@ const InWork = ({
   }
 
   return (
-    <Card className={st.main} title={'Завершить'}>
-      <Form
-        form={form}
-        layout={'vertical'}
-        autoComplete="off"
-        onFinish={() => {
-          setOpen(true);
-        }}
-      >
-        <Form.Item
-          label="Результат"
-          name="result"
-          rules={[{ required: true, message: 'Обязательное поле' }]}
+    <Flex gap={16} className={st.main}>
+      <Card title={'Завершить'} className={st.form}>
+        <Form
+          form={form}
+          layout={'vertical'}
+          autoComplete="off"
+          onFinish={() => {
+            setOpen(true);
+          }}
         >
-          <Select
-            disabled={isPending}
-            style={{ width: '100%' }}
-            options={[
-              { value: 'won', label: 'Победил' },
-              { value: 'lost', label: 'Проиграл' },
-            ]}
-          />
-        </Form.Item>
-        <Form.Item
-          label="Протокол торгов"
-          name="file"
-          rules={[{ required: true, message: 'Обязательное поле' }]}
-        >
-          <FileUpload
-            disabled={isPending}
-            id={application.id}
-            onChange={(value) => {
-              form.setFields([
-                {
-                  name: 'file',
-                  errors: value ? [] : ['Обязательное поле'],
-                  value: value,
-                },
-              ]);
-            }}
-          />
-        </Form.Item>
-        <Form.Item style={{ marginBottom: 0 }}>
-          <Flex justify={'end'} gap={12}>
-            <ConfirmModal
-              loading={isPending}
-              open={open}
-              setOpen={setOpen}
-              onOk={() => {
-                const { result } = form.getFieldsValue();
-                mutate({ id: application.id, result });
+          <Form.Item
+            label="Результат"
+            name="result"
+            rules={[{ required: true, message: 'Обязательное поле' }]}
+          >
+            <Select
+              disabled={isPending}
+              style={{ width: '100%' }}
+              options={[
+                { value: 'won', label: 'Победил' },
+                { value: 'lost', label: 'Проиграл' },
+              ]}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Протокол торгов"
+            name="file"
+            rules={[{ required: true, message: 'Обязательное поле' }]}
+          >
+            <FileUpload
+              disabled={isPending}
+              id={application.id}
+              onChange={(value) => {
+                form.setFields([
+                  {
+                    name: 'file',
+                    errors: value ? [] : ['Обязательное поле'],
+                    value: value,
+                  },
+                ]);
               }}
             />
-            <Button type="primary" htmlType="submit" loading={isPending}>
-              Продолжить
-            </Button>
-          </Flex>
-        </Form.Item>
-      </Form>
-    </Card>
+          </Form.Item>
+          <Form.Item style={{ marginBottom: 0 }}>
+            <Flex justify={'end'} gap={12}>
+              <ConfirmModal
+                loading={isPending}
+                open={open}
+                setOpen={setOpen}
+                onOk={() => {
+                  const { result } = form.getFieldsValue();
+                  mutate({ id: application.id, result });
+                }}
+              />
+              <Button type="primary" htmlType="submit" loading={isPending}>
+                Продолжить
+              </Button>
+            </Flex>
+          </Form.Item>
+        </Form>
+      </Card>
+      <div className={st.alert}>
+        <DepositStatusAlert application={application} />
+      </div>
+    </Flex>
+
   );
 };
 

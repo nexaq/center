@@ -1,12 +1,16 @@
 import st from './DepositDetails.module.scss';
 import { Alert, Button, Card, Flex, Form, Input, Modal, Radio } from 'antd';
 import BicInput from '~/components/BicInput/BicInput';
-import React, { type ReactNode, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDepositDetails } from '~/routes/application/components/Distributor/DepositDetails/useDepositDetails';
 import type { ApplicationWithAdminStatus } from '~/api/application/types';
 import OrganizationInput from '~/components/OrganizationInput/OrganizationInput';
-import CurrencyInput from '~/components/CurrencyInput/CurrencyInput';
-import { unformat } from '@react-input/number-format';
+import CreatePriceOffer from '~/routes/application/components/Distributor/BidCorrection/CreatePriceOffer/CreatePriceOffer';
+import { unformatIfString } from '~/helpers/unformatIfString';
+import type { LotModel } from '~/api/lot/types';
+import { canCreateRecommendation } from '~/routes/application/helpers/canCreateRecommendation';
+import type { PostDepositDetailsBodyForm } from '~/routes/application/components/Distributor/DepositDetails/types';
+import { NO_SPEC_RULE } from '~/routes/application/components/Distributor/DepositDetails/rules';
 
 export const ConfirmModal = ({
   open,
@@ -37,9 +41,15 @@ export const ConfirmModal = ({
   );
 };
 
-const DepositDetails = ({}: { application: ApplicationWithAdminStatus }) => {
-  const [form] = Form.useForm();
-  const [isOrganization, setIsOrganization] = useState(1);
+const DepositDetails = ({
+  application,
+  lot,
+}: {
+  application: ApplicationWithAdminStatus;
+  lot: LotModel;
+}) => {
+  const [form] = Form.useForm<PostDepositDetailsBodyForm>();
+  const isOrganization = Form.useWatch('isOrganization', form);
 
   const [open, setOpen] = useState(false);
   const { isPending, mutate } = useDepositDetails(() => setOpen(false));
@@ -62,68 +72,177 @@ const DepositDetails = ({}: { application: ApplicationWithAdminStatus }) => {
   }, [isOrganization]);
 
   return (
-    <Card className={st.main} title={'Реквизиты для задатка'}>
-      <Flex vertical gap={'large'}>
-        <Alert
-          description={'Требуется предоставить реквизиты для внесения задатка:'}
-        />
-        <Form
-          layout={'vertical'}
-          form={form}
-          onFinish={() => {
-            setOpen(true);
-          }}
-        >
-          <Form.Item>
-            <Radio.Group
-              onChange={(e) => {
-                setIsOrganization(e.target.value);
-              }}
-              value={isOrganization}
-              options={[
-                { value: 1, label: 'Юр. лицо' },
-                { value: 0, label: 'Физ. лицо' },
-              ]}
+    <Form
+      layout={'vertical'}
+      form={form}
+      initialValues={{
+        isOrganization: true,
+        priceRejected: application.userPrice,
+        createRecommendation: canCreateRecommendation(lot),
+      }}
+      onFinish={() => {
+        setOpen(true);
+      }}
+    >
+      <Flex gap={'large'} vertical={true} className={st.mainForm}>
+        <Card title={'Реквизиты для задатка'}>
+          <Flex vertical gap={'large'}>
+            <Alert
+              description={
+                'Требуется предоставить реквизиты для внесения задатка:'
+              }
             />
-          </Form.Item>
-          {!!isOrganization && (
-            <>
+            <Form.Item name={'isOrganization'}>
+              <Radio.Group
+                options={[
+                  { value: true, label: 'Юр. лицо' },
+                  { value: false, label: 'Физ. лицо' },
+                ]}
+              />
+            </Form.Item>
+            <Flex vertical>
+              {!isOrganization && (
+                <Form.Item
+                  name={'inn'}
+                  label={'ИНН'}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Обязательное поле',
+                    },
+                    {
+                      pattern: /^[0-9]{12}$/,
+                      message: 'Должно быть 12 цифр',
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+              )}
+              {!!isOrganization && (
+                <>
+                  <Form.Item
+                    name={'inn'}
+                    label={'ИНН'}
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Обязательное поле',
+                      },
+                      {
+                        pattern: /^[0-9]{10}$/,
+                        message: 'Должно быть 10 цифр',
+                      },
+                    ]}
+                  >
+                    <OrganizationInput
+                      setValue={(e) =>
+                        form.setFields([
+                          {
+                            name: 'inn',
+                            value: e,
+                          },
+                        ])
+                      }
+                      onSelect={(e) => {
+                        form.setFields([
+                          {
+                            name: 'kpp',
+                            value: e.kpp,
+                          },
+                          {
+                            name: 'inn',
+                            value: e.inn,
+                          },
+                          {
+                            name: 'name',
+                            value: e.name,
+                          },
+                        ]);
+                        form.validateFields({
+                          dirty: true,
+                        });
+                      }}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name={'kpp'}
+                    label={'КПП'}
+                    rules={[
+                      {
+                        pattern: /[0-9]{9}/,
+                        message: 'Должно быть 9 цифр',
+                      },
+                    ]}
+                  >
+                    <Input maxLength={12} />
+                  </Form.Item>
+                </>
+              )}
               <Form.Item
-                name={'inn'}
-                label={'ИНН'}
+                name={'name'}
+                label={'Получатель'}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Обязательное поле',
+                  },
+                  NO_SPEC_RULE,
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name={'account'}
+                label="Номер счета"
+                rules={[
+                  {
+                    required: true,
+                    min: 20,
+                    max: 20,
+                    pattern: /[0-9]{20}/,
+                    message: 'Должно быть 20 цифр',
+                  },
+                ]}
+              >
+                <Input maxLength={20} />
+              </Form.Item>
+              <Form.Item
+                name={'bic'}
+                label={'БИК'}
                 rules={[
                   {
                     required: true,
                     message: 'Обязательное поле',
                   },
                   {
-                    pattern: /[0-9]{10}/,
-                    message: 'Должно быть 10 цифр',
+                    pattern: /[0-9]{9}/,
+                    message: 'Должно быть 9 цифр',
                   },
                 ]}
               >
-                <OrganizationInput
-                  setValue={(e) =>
+                <BicInput
+                  setValue={(bic) => {
                     form.setFields([
                       {
-                        name: 'inn',
-                        value: e,
+                        name: 'bic',
+                        value: bic,
                       },
-                    ])
-                  }
-                  onSelect={(e) => {
+                    ]);
+                  }}
+                  onSelect={(item) => {
                     form.setFields([
                       {
-                        name: 'kpp',
-                        value: e.kpp,
+                        name: 'bic',
+                        value: item.bic,
                       },
                       {
-                        name: 'inn',
-                        value: e.inn,
+                        name: 'bankName',
+                        value: item.name,
                       },
                       {
-                        name: 'name',
-                        value: e.name,
+                        name: 'corrAccount',
+                        value: item.correspondentAccount,
                       },
                     ]);
                     form.validateFields({
@@ -133,145 +252,47 @@ const DepositDetails = ({}: { application: ApplicationWithAdminStatus }) => {
                 />
               </Form.Item>
               <Form.Item
-                name={'kpp'}
-                label={'КПП'}
+                name={'bankName'}
+                label="Название банка"
                 rules={[
                   {
-                    pattern: /[0-9]{9}/,
-                    message: 'Должно быть 9 цифр',
+                    required: true,
+                    message: 'Обязательное поле',
+                  },
+                  {
+                    min: 3,
+                    message: 'Минимум 2 символа',
                   },
                 ]}
               >
-                <Input maxLength={12} />
+                <Input />
               </Form.Item>
-            </>
-          )}
-          <Form.Item
-            name={'name'}
-            label={'Получатель'}
-            rules={[{ required: true, message: 'Обязательное поле' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name={'account'}
-            label="Номер счета"
-            rules={[
-              {
-                required: true,
-                min: 20,
-                max: 20,
-                pattern: /[0-9]{20}/,
-                message: 'Должно быть 20 цифр',
-              },
-            ]}
-          >
-            <Input maxLength={20} />
-          </Form.Item>
-          <Form.Item
-            name={'bic'}
-            label={'БИК'}
-            rules={[
-              {
-                required: true,
-                message: 'Обязательное поле',
-              },
-              {
-                pattern: /[0-9]{9}/,
-                message: 'Должно быть 9 цифр',
-              },
-            ]}
-          >
-            <BicInput
-              setValue={(bic) => {
-                form.setFields([
+              <Form.Item
+                name={'corrAccount'}
+                label="Корр. счет"
+                rules={[
                   {
-                    name: 'bic',
-                    value: bic,
+                    required: true,
+                    min: 20,
+                    max: 20,
+                    pattern: /[0-9]{20}/,
+                    message: 'Должно быть 20 цифр',
                   },
-                ]);
-              }}
-              onSelect={(item) => {
-                form.setFields([
-                  {
-                    name: 'bic',
-                    value: item.bic,
-                  },
-                  {
-                    name: 'bankName',
-                    value: item.name,
-                  },
-                  {
-                    name: 'corrAccount',
-                    value: item.correspondentAccount,
-                  },
-                ]);
-                form.validateFields({
-                  dirty: true,
-                });
-              }}
-            />
-          </Form.Item>
-          <Form.Item
-            name={'bankName'}
-            label="Название банка"
-            rules={[
-              {
-                required: true,
-                message: 'Обязательное поле',
-              },
-              {
-                min: 3,
-                message: 'Минимум 2 символа',
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name={'corrAccount'}
-            label="Корр. счет"
-            rules={[
-              {
-                required: true,
-                min: 20,
-                max: 20,
-                pattern: /[0-9]{20}/,
-                message: 'Должно быть 20 цифр',
-              },
-            ]}
-          >
-            <Input maxLength={20} />
-          </Form.Item>
-          <Form.Item
-            name={'sum'}
-            label="Сумма"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            {/*@ts-ignore*/}
-            <CurrencyInput />
-          </Form.Item>
-          <Form.Item
-            name={'purpose'}
-            label="Назначение платежа"
-            rules={[
-              {
-                required: true,
-                message: 'Обязательное поле',
-              },
-              {
-                min: 10,
-                message: 'Минимум 10 символов',
-              },
-            ]}
-          >
-            <Input.TextArea maxLength={210} showCount />
-          </Form.Item>
-          <Form.Item>
+                ]}
+              >
+                <Input maxLength={20} />
+              </Form.Item>
+            </Flex>
+          </Flex>
+        </Card>
+        <Card title={'Создать рекомендацию'}>
+          <CreatePriceOffer application={application} lot={lot} form={form} />
+        </Card>
+        <Card>
+          <Flex justify={'flex-end'}>
+            <Button type={'primary'} htmlType={'submit'}>
+              Сохранить
+            </Button>
             <ConfirmModal
               setOpen={setOpen}
               open={open}
@@ -279,18 +300,26 @@ const DepositDetails = ({}: { application: ApplicationWithAdminStatus }) => {
                 const values = form.getFieldsValue();
                 mutate({
                   ...values,
-                  sum: Number(unformat(values.sum)),
+                  depositAccepted: values.depositAccepted
+                    ? unformatIfString(values.depositAccepted)
+                    : undefined,
+                  depositRejected: unformatIfString(values.depositRejected),
+                  priceAccepted: values.priceAccepted
+                    ? unformatIfString(values.priceAccepted)
+                    : undefined,
+                  priceRejected: unformatIfString(values.priceRejected),
+                  depositBeforeAccepted:
+                    values.depositBeforeAccepted?.toISOString(),
+                  depositBeforeRejected:
+                    values.depositBeforeRejected.toISOString(),
                 });
               }}
               loading={isPending}
             />
-            <Button type="primary" htmlType="submit" loading={isPending}>
-              Продолжить
-            </Button>
-          </Form.Item>
-        </Form>
+          </Flex>
+        </Card>
       </Flex>
-    </Card>
+    </Form>
   );
 };
 

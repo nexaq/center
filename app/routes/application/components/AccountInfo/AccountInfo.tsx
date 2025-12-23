@@ -1,7 +1,9 @@
 import st from './AccountInfo.module.scss';
-import {Card, Descriptions, Flex} from 'antd';
+import {Alert, Card, Descriptions, Flex} from 'antd';
 import React from 'react';
 import type { ApplicationWithAdminStatus } from '~/api/application/types';
+import dayjs from "dayjs";
+import {CopyableValue} from "~/routes/application/components/Accounts/Accounts";
 
 const AccountInfo = ({
   application,
@@ -16,10 +18,10 @@ const AccountInfo = ({
             {application.user.name}
           </Descriptions.Item>
           <Descriptions.Item label="Email">
-            {application.user.email}
+            <CopyableValue value={application.user.email} />
           </Descriptions.Item>
           <Descriptions.Item label="Создан">
-            {application.user.createdAt}
+            {dayjs(application.user.createdAt).format('DD.MM.YYYY HH:mm')}
           </Descriptions.Item>
         </Descriptions>
       </Card>

@@ -10,17 +10,13 @@ interface StepperProps {
   application: ApplicationWithAdminStatus;
 }
 
+
 export default function Stepper({ application }: StepperProps) {
   let current = 0;
   current =
     application.adminStatus === ApplicationAdminStatus.CREATED ? 0 : current;
   current =
     application.adminStatus === ApplicationAdminStatus.REVIEW ? 1 : current;
-
-  current =
-    application.adminStatus === ApplicationAdminStatus.BID_CORRECTION
-      ? 2
-      : current;
 
   current =
     application.adminStatus === ApplicationAdminStatus.DEPOSIT_DETAILS

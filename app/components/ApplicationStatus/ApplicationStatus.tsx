@@ -7,7 +7,7 @@ import {
 } from '~/api/application/getList';
 import Dollar from '~/icons/dollar/Dollar';
 
-const { Text, Link } = Typography;
+const { Text } = Typography;
 
 const getConfig = (status: ApplicationAdminStatus) => {
   if (status === ApplicationAdminStatus.CREATED) {
@@ -16,7 +16,7 @@ const getConfig = (status: ApplicationAdminStatus) => {
       text: 'Создан',
       sub: 'Не оплачен',
     };
-  } else if ([ApplicationAdminStatus.REVIEW, ApplicationAdminStatus.DEPOSIT_DETAILS, ApplicationAdminStatus.BID_CORRECTION].includes(status)) {
+  } else if ([ApplicationAdminStatus.REVIEW, ApplicationAdminStatus.DEPOSIT_DETAILS].includes(status)) {
     return {
       color: 'orange',
       text: 'Ожидает действия',

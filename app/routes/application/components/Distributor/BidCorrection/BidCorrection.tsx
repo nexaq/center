@@ -1,7 +1,4 @@
-import st from './BidCorrection.module.scss';
-import PriceDescription from '~/routes/application/components/PriceDescription/PriceDescription';
 import type { LotModel } from '~/api/lot/types';
-import { Alert, Card, Descriptions, Flex, Space } from 'antd';
 import React from 'react';
 import formatNumber from '~/helpers/formatNumber';
 import Editable from '~/routes/application/components/Review/Editable/Editable';
@@ -9,8 +6,6 @@ import type { ApplicationWithAdminStatus } from '~/api/application/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { bidCorrections } from '~/api/application/bidCorrection';
 import { unformat } from '@react-input/number-format';
-import ApplicationCancel from '~/components/ApplicationCancel/ApplicationCancel';
-import NextStepButton from '~/routes/application/components/Distributor/BidCorrection/NextStepButton/NextStepButton';
 
 export function EditStepPrice({
   application,
@@ -55,7 +50,11 @@ export function EditStepPrice({
   return (
     <Editable
       editable={editable}
-      extra={withPercentage && !percentage ? `(${((correctionValue ?? defaultValue) / startPrice) * 100}%)` : undefined}
+      extra={
+        withPercentage && !percentage
+          ? `(${((correctionValue ?? defaultValue) / startPrice) * 100}%)`
+          : undefined
+      }
       onSubmit={async (value) => {
         return mutate({
           stepPrice: percentage ? (value / 100) * startPrice : value,
@@ -136,69 +135,3 @@ export const WantPrice = ({
     );
   }
 };
-
-const BidCorrection = ({
-  lot,
-  application,
-}: {
-  lot: LotModel;
-  application: ApplicationWithAdminStatus;
-}) => {
-  return (
-    <div className={st.main}>
-      <Space direction="vertical" size={16} style={{ width: '100%' }}>
-        {/*<Card>*/}
-        {/*  <PriceDescription*/}
-        {/*    lot={lot}*/}
-        {/*    title={'Исходная стоимость'}*/}
-        {/*    application={application}*/}
-        {/*  />*/}
-        {/*</Card>*/}
-        <Alert
-          showIcon
-          message="Внимательно проверь!"
-          description={
-            lot.sale.type === 'AUCTION'
-              ? 'Проверь шаг аукциона и цена будет изменена в соответствии.'
-              : 'Проверь желаемую стоимость'
-          }
-          type="warning"
-        />
-        <Card>
-          <Descriptions title={'Желаемая стоимость'} column={1}>
-            <Descriptions.Item label="Желаемая стоимость">
-              <WantPrice lot={lot} application={application} />
-            </Descriptions.Item>
-            {lot.sale.type === 'AUCTION' && (
-              <>
-                <Descriptions.Item label="Шаг аукциона">
-                  <EditStepPrice
-                    defaultValue={lot.stepPrice}
-                    application={application}
-                    startPrice={lot.startPrice}
-                  />
-                </Descriptions.Item>
-                <Descriptions.Item label="Шаг аукциона %">
-                  <EditStepPrice
-                    percentage
-                    defaultValue={lot.stepPrice}
-                    application={application}
-                    startPrice={lot.startPrice}
-                  />
-                </Descriptions.Item>
-              </>
-            )}
-          </Descriptions>
-        </Card>
-        <Card>
-          <Flex gap={8} justify={'end'}>
-            <ApplicationCancel application={application} />
-            <NextStepButton application={application} />
-          </Flex>
-        </Card>
-      </Space>
-    </div>
-  );
-};
-
-export default BidCorrection;
