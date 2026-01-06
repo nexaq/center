@@ -3,6 +3,7 @@ import { DownloadOutlined } from '@ant-design/icons';
 import React from 'react';
 import type { ApplicationWithAdminStatus } from '~/api/application/types';
 import { downloadPayment } from '~/api/application/downloadPayment';
+import { ApplicationStatus } from '~/api/application/getList';
 
 const DownloadPaymentFile = ({
   application,
@@ -29,9 +30,13 @@ const DepositStatusAlert = ({
 }: {
   application: ApplicationWithAdminStatus;
 }) => {
+  const isDepositPaid =
+    application.paymentFile &&
+    application.status !== ApplicationStatus.WAITING_DEPOSIT;
+
   return (
     <>
-      {!application.paymentFile && (
+      {!isDepositPaid && (
         <Alert
           showIcon
           type={'warning'}
@@ -39,7 +44,7 @@ const DepositStatusAlert = ({
           description={'Возможно стоит выслать напоминание пользователю'}
         />
       )}
-      {application.paymentFile && (
+      {isDepositPaid && (
         <Alert
           showIcon
           type={'success'}

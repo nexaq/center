@@ -36,7 +36,6 @@ const FileUpload = ({ id, onChange, disabled }: { id: number, onChange: (v: stri
     <>
       {contextHolder}
       <Upload {...props}>
-
         <Button icon={<UploadOutlined />}>Click to Upload</Button>
       </Upload>
     </>
