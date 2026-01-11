@@ -7,6 +7,8 @@ import { api } from '~/api/config';
 import type { ApplicationWithAdminStatus } from '~/api/application/types';
 import { ConfirmModal } from '~/routes/application/components/Distributor/DepositDetails/DepositDetails';
 import DepositStatusAlert from "~/routes/application/components/DepositStatusAlert/DepositStatusAlert";
+import {isAxiosError} from "axios";
+import {extractErrorMessage} from "~/helpers/extractErrorMessage";
 
 const InWork = ({
   application,
@@ -23,6 +25,14 @@ const InWork = ({
       await api.post(`center/application/${id}/finish`, {
         result,
       });
+    },
+    onError: (error) => {
+      if (isAxiosError(error) && error.status === 400) {
+        message.error(extractErrorMessage(error));
+        return;
+      }
+
+      message.error('Произошла ошибка!')
     },
     onSuccess: async () => {
       message.success('Успешно!');

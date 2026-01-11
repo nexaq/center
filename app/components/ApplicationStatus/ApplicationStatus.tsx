@@ -3,30 +3,53 @@ import { Flex, Tag, Typography } from 'antd';
 import React from 'react';
 import {
   ApplicationAdminStatus,
-  ApplicationStatus as StatusType,
+  ApplicationStatus as Status,
 } from '~/api/application/getList';
 import Dollar from '~/icons/dollar/Dollar';
 
 const { Text } = Typography;
 
-const getConfig = (status: ApplicationAdminStatus) => {
-  if (status === ApplicationAdminStatus.CREATED) {
+const getConfig = (adminStatus: ApplicationAdminStatus, status: Status) => {
+  if (adminStatus === ApplicationAdminStatus.CREATED) {
     return {
       color: undefined,
       text: 'Создан',
       sub: 'Не оплачен',
     };
-  } else if ([ApplicationAdminStatus.REVIEW, ApplicationAdminStatus.DEPOSIT_DETAILS].includes(status)) {
+  } else if (
+    [
+      ApplicationAdminStatus.REVIEW,
+      ApplicationAdminStatus.DEPOSIT_DETAILS,
+    ].includes(adminStatus)
+  ) {
     return {
       color: 'orange',
-      text: 'Ожидает действия',
+      text: 'На рассмотрении',
+      sub: 'Оплатил',
+    };
+  } else if ([ApplicationAdminStatus.IN_WORK].includes(adminStatus)) {
+    return {
+      color: 'blue',
+      text: 'В работе',
+      sub: 'Оплатил',
+    };
+  } else if ([ApplicationAdminStatus.RESULT].includes(adminStatus) && status === Status.WON) {
+    return {
+      color: 'green',
+      text: 'Победил',
+      sub: 'Оплатил',
+    };
+  } else if ([ApplicationAdminStatus.RESULT].includes(adminStatus) && status === Status.LOST) {
+    return {
+      color: 'red',
+      text: 'Проиграл',
       sub: 'Оплатил',
     };
   }
 };
 
-const ApplicationStatus = ({ status }: { status: ApplicationAdminStatus }) => {
-  const config = getConfig(status);
+const ApplicationStatus = ({ adminStatus, status }: { adminStatus: ApplicationAdminStatus, status: Status }) => {
+  const config = getConfig(adminStatus, status);
   if (!config) {
     return <></>;
   }

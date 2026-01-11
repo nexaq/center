@@ -22,6 +22,7 @@ import distributor from '~/routes/application/components/Distributor/Distributor
 import { useApplication } from '~/hooks/useApplication/useApplication';
 import Accounts from '~/routes/application/components/Accounts/Accounts';
 import Actions from '~/routes/application/components/Actions/Actions';
+import Documents from "~/routes/application/components/Documents/Documents";
 
 const { Title } = Typography;
 
@@ -65,6 +66,11 @@ const TabDivider = ({
       key: '5',
       label: 'Задаток',
       children: <Accounts application={application} />,
+    },
+    {
+      key: '6',
+      label: 'Документы',
+      children: <Documents application={application}  />,
     },
   ];
 

@@ -1,13 +1,13 @@
 import React, { type ReactNode, useEffect, useState } from 'react';
-import {Flex, Spin, Table, Tag, Typography} from 'antd';
+import { Table, Typography } from 'antd';
 import st from './ApplicationTable.module.scss';
 import { useNavigate } from 'react-router';
 import cn from 'classnames';
-import {getList} from '~/api/application/getList';
-import ApplicationStatus from "~/components/ApplicationStatus/ApplicationStatus";
-import type {ApplicationItem, ApplicationWithAdminStatus} from "~/api/application/types";
+import { getList } from '~/api/application/getList';
+import ApplicationStatus from '~/components/ApplicationStatus/ApplicationStatus';
+import type { ApplicationWithAdminStatus } from '~/api/application/types';
 
-const { Text, Link } = Typography;
+const { Link } = Typography;
 
 interface DataType {
   key: number;
@@ -19,15 +19,26 @@ interface DataType {
   left: string;
 }
 
-const LotInfo = ({ application }: { application: ApplicationWithAdminStatus }) => {
+const LotInfo = ({
+  application,
+}: {
+  application: ApplicationWithAdminStatus;
+}) => {
   return (
     <div>
       <div>
-        <Link href={'#'} className={st.rowLotLink} onClick={e => {
-          e.preventDefault();
-          e.stopPropagation();
-          window.open(`https://mercx.ru/lot/${application.lotCode}`, "_blank");
-        }}>
+        <Link
+          href={'#'}
+          className={st.rowLotLink}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            window.open(
+              `https://mercx.ru/lot/${application.lotCode}`,
+              '_blank',
+            );
+          }}
+        >
           {application.saleNumber}
         </Link>
       </div>
@@ -52,17 +63,21 @@ const ApplicationTable = () => {
   return (
     <Table<DataType>
       loading={loading}
-      rowClassName={(record, k) => cn(k === 1 && st.rowMuted, st.rowClickable)}
+      rowClassName={(k) => cn(k.key % 2 === 1 && st.rowMuted, st.rowClickable)}
       pagination={false}
-      dataSource={list.map((i) => ({
-        key: i.id,
-        id: i.id,
-        code: i.code,
-        name: i.user.name,
-        lot: <LotInfo application={i} />,
-        status: <ApplicationStatus status={i.adminStatus} />,
-        left: '2 дня',
-      }))}
+      dataSource={list.map((i) => {
+        return {
+          key: i.id,
+          id: i.id,
+          code: i.code,
+          name: i.user.name,
+          lot: <LotInfo application={i} />,
+          status: (
+            <ApplicationStatus adminStatus={i.adminStatus} status={i.status} />
+          ),
+          left: '2 дня',
+        };
+      })}
       columns={[
         {
           title: 'Номер',

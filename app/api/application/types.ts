@@ -31,6 +31,14 @@ export interface DepositDetails {
   isOrganization: boolean;
 }
 
+export enum RecommendationAcceptanceOfferStatus {
+  ACCEPTED = 'ACCEPTED',
+  REJECTED = 'REJECTED',
+  EXPIRED = 'EXPIRED',
+  NOT_EXISTS = 'NOT_EXISTS',
+  IS_CONSIDERING = 'IS_CONSIDERING',
+}
+
 export interface ApplicationItem {
   id: number;
   userId: number;
@@ -39,6 +47,7 @@ export interface ApplicationItem {
   title: string;
   status: ApplicationStatus;
   user: User;
+  p2: string | null;
   code: string;
   saleNumber: string;
   moderationStatus: ApplicationModerationStatus;
@@ -49,6 +58,7 @@ export interface ApplicationItem {
   stepPriceCorrection: number | null;
   returnDepositDetails: ReturnDepositDetails | null;
   depositDetails: DepositDetails | null;
+  recommendationAcceptanceInfo: RecommendationAcceptanceOfferStatus,
 }
 
 export type ApplicationWithAdminStatus = ApplicationItem & {

@@ -3,6 +3,10 @@
   width:100%;
 }
 
-.form, .alert {
+.alert {
   flex-grow: 1;
+}
+
+.form {
+  flex: 0 0 350px;
 }
