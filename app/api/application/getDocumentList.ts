@@ -1,4 +1,4 @@
-import {api} from "~/api/config";
+import {userApi} from "~/api/config";
 
 export interface DocumentListInterface {
     "applicationAgent"?: string | null,
@@ -8,7 +8,7 @@ export interface DocumentListInterface {
 }
 
 export const getDocumentList = async (applicationId: number) => {
-    const { data } = await api.get<DocumentListInterface>(`/center-document/${applicationId}/application`);
+    const { data } = await userApi.get<DocumentListInterface>(`/center-document/${applicationId}/application`);
 
     return data;
 }

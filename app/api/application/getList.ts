@@ -1,4 +1,4 @@
-import { api } from '~/api/config';
+import { userApi } from '~/api/config';
 import type {
   ApplicationItem,
   ApplicationWithAdminStatus,
@@ -65,7 +65,7 @@ export const getAdminStatus = (
 };
 
 export const getList = async (): Promise<ApplicationWithAdminStatus[]> => {
-  const { data } = await api.get<ApplicationItem[]>('/center/application');
+  const { data } = await userApi.get<ApplicationItem[]>('/center/application');
   return data.map((i) => ({
     ...i,
     adminStatus: getAdminStatus(i.status, i.moderationStatus),

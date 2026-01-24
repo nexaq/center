@@ -1,7 +1,7 @@
-import {api} from "~/api/config";
+import {userApi} from "~/api/config";
 
 export const bidCorrections = async (id: number, stepPrice: number) => {
-  await api.post(`/center/application/${id}/bid-correction`, {
+  await userApi.post(`/center/application/${id}/bid-correction`, {
     stepPrice
   });
 };

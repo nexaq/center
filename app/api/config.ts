@@ -1,5 +1,9 @@
 import axios from "axios";
 
-export const CENTER_API_HOST = "http://localhost:3012";
+export const USER_HOST = import.meta.env.VITE_USER_API;
+export const API_HOST = import.meta.env.VITE_LOT_API;
 
-export const api = axios.create({ baseURL: CENTER_API_HOST });
+export const userApi = axios.create({ baseURL: USER_HOST });
+export const lotApi = axios.create({
+    baseURL: API_HOST,
+});

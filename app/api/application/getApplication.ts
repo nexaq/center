@@ -1,9 +1,9 @@
-import { api } from '~/api/config';
+import { userApi } from '~/api/config';
 import type { ApplicationWithAdminStatus } from '~/api/application/types';
 import { getAdminStatus } from '~/api/application/getList';
 
 export const getApplication = async (id: number) => {
-  const { data } = await api.get<ApplicationWithAdminStatus>(
+  const { data } = await userApi.get<ApplicationWithAdminStatus>(
     `/center/application/${id}`,
   );
 

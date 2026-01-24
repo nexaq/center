@@ -1,4 +1,4 @@
-import {api} from "~/api/config";
+import {userApi} from "~/api/config";
 
 interface CreatePriceOfferProps {
   applicationId: number;
@@ -10,5 +10,5 @@ interface CreatePriceOfferProps {
 
 
 export const createPriceOffer = async ({ applicationId, ...other }: CreatePriceOfferProps) => {
-  await api.post(`/center/application-offer/${applicationId}`, other);
+  await userApi.post(`/center/application-offer/${applicationId}`, other);
 }

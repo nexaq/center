@@ -1,5 +1,5 @@
-import {api} from "~/api/config";
+import {userApi} from "~/api/config";
 
 export const endBidCorrection = async (id: number) => {
-  await api.post(`/center/application/${id}/end-bid-correction`);
+  await userApi.post(`/center/application/${id}/end-bid-correction`);
 }

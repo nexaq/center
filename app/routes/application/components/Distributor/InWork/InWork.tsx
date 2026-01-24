@@ -3,7 +3,7 @@ import { App, Button, Card, Flex, Form, Select } from 'antd';
 import React, { useState } from 'react';
 import FileUpload from '~/components/FileUpload/FileUpload';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '~/api/config';
+import { userApi } from '~/api/config';
 import type { ApplicationWithAdminStatus } from '~/api/application/types';
 import { ConfirmModal } from '~/routes/application/components/Distributor/DepositDetails/DepositDetails';
 import DepositStatusAlert from "~/routes/application/components/DepositStatusAlert/DepositStatusAlert";
@@ -22,7 +22,7 @@ const InWork = ({
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: async ({ id, result }: { id: number; result: string }) => {
-      await api.post(`center/application/${id}/finish`, {
+      await userApi.post(`center/application/${id}/finish`, {
         result,
       });
     },

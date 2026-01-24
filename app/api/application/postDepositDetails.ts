@@ -1,4 +1,4 @@
-import { api } from '~/api/config';
+import { userApi } from '~/api/config';
 
 
 export interface PostDepositDetailsBody {
@@ -56,7 +56,7 @@ export const postDepositDetails = async (
     comment
   }
 
-  const { data } = await api.post(`/center/application/${id}/deposit-details`, {
+  const { data } = await userApi.post(`/center/application/${id}/deposit-details`, {
     depositDetails: other,
     priceOffer
   });

@@ -3,7 +3,7 @@ import { Button, Card, Descriptions } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { useDocumentList } from '~/routes/application/components/Documents/useDocumentList';
 import type { ApplicationWithAdminStatus } from '~/api/application/types';
-import { CENTER_API_HOST } from '~/api/config';
+import { USER_HOST } from '~/api/config';
 
 const Documents = ({
   application,
@@ -13,7 +13,7 @@ const Documents = ({
   const { data, isPending } = useDocumentList(application.id);
 
   const download = (rawUrl: string) => {
-    window.open(`${CENTER_API_HOST}${rawUrl}`, '_blank');
+    window.open(`${USER_HOST}${rawUrl}`, '_blank');
   };
 
   const empty = <>Пока отсутствует</>;

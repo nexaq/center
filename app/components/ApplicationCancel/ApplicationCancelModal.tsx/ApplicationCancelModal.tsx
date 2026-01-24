@@ -1,7 +1,7 @@
 import { Form, Input, Modal, Select } from 'antd';
 import React from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '~/api/config';
+import { userApi } from '~/api/config';
 import { useApplication } from '~/hooks/useApplication/useApplication';
 import { isAxiosError } from 'axios';
 import type { ApplicationWithAdminStatus } from '~/api/application/types';
@@ -23,7 +23,7 @@ const ApplicationCancelModal = ({
 
   const { mutate } = useMutation<void, Error, { id: number; reason: string }>({
     mutationFn: ({ id, reason }) => {
-      return api.post(`/center/application/${id}/reject`, {
+      return userApi.post(`/center/application/${id}/reject`, {
         reason,
       });
     },

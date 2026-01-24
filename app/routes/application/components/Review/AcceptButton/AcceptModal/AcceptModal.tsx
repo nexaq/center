@@ -1,7 +1,7 @@
 import { App, Modal } from 'antd';
 import React from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '~/api/config';
+import { userApi } from '~/api/config';
 import { isAxiosError } from 'axios';
 import type { ApplicationWithAdminStatus } from '~/api/application/types';
 
@@ -18,7 +18,7 @@ const AcceptModal = ({
   const queryClient = useQueryClient();
   const { isPending, mutate } = useMutation<void, unknown, { id: number }>({
     mutationFn: async ({ id }) => {
-      const { data } = await api.post(
+      const { data } = await userApi.post(
         `/center/application/${id}/moderation/review`,
       );
       return data;
