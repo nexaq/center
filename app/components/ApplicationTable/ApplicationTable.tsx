@@ -6,6 +6,7 @@ import cn from 'classnames';
 import { getList } from '~/api/application/getList';
 import ApplicationStatus from '~/components/ApplicationStatus/ApplicationStatus';
 import type { ApplicationWithAdminStatus } from '~/api/application/types';
+import {useQuery} from "@tanstack/react-query";
 
 const { Link } = Typography;
 
@@ -50,22 +51,20 @@ const LotInfo = ({
 const ApplicationTable = () => {
   const navigate = useNavigate();
 
-  const [list, setList] = useState<ApplicationWithAdminStatus[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-    getList()
-      .then((i) => setList(i))
-      .finally(() => setLoading(false));
-  }, []);
+  const { data: list, isPending } = useQuery({
+    queryKey: ['applicationList'],
+    refetchOnWindowFocus: true,
+    queryFn: async () => {
+      return await getList();
+    },
+  });
 
   return (
     <Table<DataType>
-      loading={loading}
+      loading={isPending}
       rowClassName={(k) => cn(k.key % 2 === 1 && st.rowMuted, st.rowClickable)}
       pagination={false}
-      dataSource={list.map((i) => {
+      dataSource={list?.map((i) => {
         return {
           key: i.id,
           id: i.id,
@@ -77,7 +76,7 @@ const ApplicationTable = () => {
           ),
           left: '2 дня',
         };
-      })}
+      }) ?? []}
       columns={[
         {
           title: 'Номер',
