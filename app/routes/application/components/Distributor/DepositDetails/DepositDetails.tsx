@@ -55,18 +55,92 @@ const DepositDetails = ({
   const { isPending, mutate } = useDepositDetails(() => setOpen(false));
 
   useEffect(() => {
+    if (isOrganization === 'me') {
+      form.setFields([
+        {
+          name: 'inn',
+          value: '972706176760',
+        },
+        {
+          name: 'name',
+          value: 'ИП Шайхутдинов Семён Ринатович',
+        },
+        {
+          name: 'account',
+          value: '40802810540720005755',
+        },
+        {
+          name: 'bic',
+          value: '044525225',
+        },
+        {
+          name: 'bankName',
+          value: 'ПАО Сбербанк',
+        },
+        {
+          name: 'corrAccount',
+          value: '30101810400000000225',
+        },
+        {
+          name: 'kpp',
+          value: '',
+        },
+        {
+          name: 'kpp',
+          value: '',
+        },
+        {
+          name: 'purposeAccepted',
+          value: `Заявка № ${application.code}`,
+        },
+        {
+          name: 'purposeRejected',
+          value: `Заявка № ${application.code}`,
+        },
+      ]);
+      return;
+    }
+
     form.setFields([
-      {
-        name: 'name',
-        value: '',
-      },
       {
         name: 'inn',
         value: '',
       },
       {
+        name: 'name',
+        value: '',
+      },
+      {
+        name: 'account',
+        value: '',
+      },
+      {
+        name: 'bic',
+        value: '',
+      },
+      {
+        name: 'bankName',
+        value: '',
+      },
+      {
+        name: 'corrAccount',
+        value: '',
+      },
+      {
         name: 'kpp',
         value: '',
+      },
+      {
+        name: 'kpp',
+        value: '',
+      },
+      {
+        name: 'purposeAccepted',
+        value: ``,
+      },
+      {
+        name: 'purposeRejected',
+        value: ``,
       },
     ]);
   }, [isOrganization]);
@@ -97,11 +171,12 @@ const DepositDetails = ({
                 options={[
                   { value: true, label: 'Юр. лицо' },
                   { value: false, label: 'Физ. лицо' },
+                  { value: 'me', label: 'ИП Шайхутдинов' },
                 ]}
               />
             </Form.Item>
             <Flex vertical>
-              {!isOrganization && (
+              {(isOrganization === false || isOrganization === 'me') && (
                 <Form.Item
                   name={'inn'}
                   label={'ИНН'}
@@ -119,7 +194,7 @@ const DepositDetails = ({
                   <Input />
                 </Form.Item>
               )}
-              {!!isOrganization && (
+              {(isOrganization === true) && (
                 <>
                   <Form.Item
                     name={'inn'}
@@ -312,6 +387,7 @@ const DepositDetails = ({
                     values.depositBeforeAccepted?.toISOString(),
                   depositBeforeRejected:
                     values.depositBeforeRejected.toISOString(),
+                  isOrganization: isOrganization === 'me' ? false : isOrganization,
                 });
               }}
               loading={isPending}

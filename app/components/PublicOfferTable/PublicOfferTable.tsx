@@ -67,7 +67,7 @@ const PublicOfferTable = ({ table }: { table?: PriceTableItem[] }) => {
 
   return (
     <div className={st.wrapper}>
-      <LabelWithCheckbox label={'Табцлиа'} />
+      <LabelWithCheckbox label={'Проверь таблицу'} />
       <Table<PriceTableItem>
         pagination={false}
         columns={columns}

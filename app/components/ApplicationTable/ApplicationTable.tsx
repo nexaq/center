@@ -6,7 +6,9 @@ import cn from 'classnames';
 import { getList } from '~/api/application/getList';
 import ApplicationStatus from '~/components/ApplicationStatus/ApplicationStatus';
 import type { ApplicationWithAdminStatus } from '~/api/application/types';
-import {useQuery} from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query';
+import { useTableStore } from '~/components/ApplicationTable/tableStore';
+import PayTabs from "~/components/ApplicationTable/Tabs/Tabs";
 
 const { Link } = Typography;
 
@@ -50,69 +52,80 @@ const LotInfo = ({
 
 const ApplicationTable = () => {
   const navigate = useNavigate();
+  const { tab } = useTableStore();
 
   const { data: list, isPending } = useQuery({
-    queryKey: ['applicationList'],
+    queryKey: ['applicationList', tab],
     refetchOnWindowFocus: true,
     queryFn: async () => {
-      return await getList();
+      return await getList(tab);
     },
   });
 
   return (
-    <Table<DataType>
-      loading={isPending}
-      rowClassName={(k) => cn(k.key % 2 === 1 && st.rowMuted, st.rowClickable)}
-      pagination={false}
-      dataSource={list?.map((i) => {
-        return {
-          key: i.id,
-          id: i.id,
-          code: i.code,
-          name: i.user.name,
-          lot: <LotInfo application={i} />,
-          status: (
-            <ApplicationStatus adminStatus={i.adminStatus} status={i.status} />
-          ),
-          left: '2 дня',
-        };
-      }) ?? []}
-      columns={[
-        {
-          title: 'Номер',
-          dataIndex: 'code',
-          key: 'code',
-          className: st.rowCode,
-        },
-        {
-          title: 'Участник',
-          dataIndex: 'name',
-          key: 'name',
-        },
-        {
-          title: 'Лот',
-          dataIndex: 'lot',
-          key: 'lot',
-        },
-        {
-          title: 'Статус',
-          dataIndex: 'status',
-          key: 'status',
-        },
-        {
-          title: 'Осталось',
-          dataIndex: 'left',
-          key: 'left',
-        },
-      ]}
-      onRow={(record, rowIndex) => {
-        return {
-          onClick: (event) => {
-            navigate(`/application/${record.id}`);
+    <>
+      <PayTabs />
+      <Table<DataType>
+        loading={isPending}
+        rowClassName={(k) =>
+          cn(k.key % 2 === 1 && st.rowMuted, st.rowClickable)
+        }
+        pagination={false}
+        dataSource={
+          list?.map((i) => {
+            return {
+              key: i.id,
+              id: i.id,
+              code: i.code,
+              name: i.user.name,
+              lot: <LotInfo application={i} />,
+              status: (
+                <ApplicationStatus
+                  adminStatus={i.adminStatus}
+                  status={i.status}
+                />
+              ),
+              left: '2 дня',
+            };
+          }) ?? []
+        }
+        columns={[
+          {
+            title: 'Номер',
+            dataIndex: 'code',
+            key: 'code',
+            className: st.rowCode,
           },
-        };
-      }}
-    />
+          {
+            title: 'Участник',
+            dataIndex: 'name',
+            key: 'name',
+          },
+          {
+            title: 'Лот',
+            dataIndex: 'lot',
+            key: 'lot',
+          },
+          {
+            title: 'Статус',
+            dataIndex: 'status',
+            key: 'status',
+          },
+          {
+            title: 'Осталось',
+            dataIndex: 'left',
+            key: 'left',
+          },
+        ]}
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: (event) => {
+              navigate(`/application/${record.id}`);
+            },
+          };
+        }}
+      />
+    </>
   );
 };
 

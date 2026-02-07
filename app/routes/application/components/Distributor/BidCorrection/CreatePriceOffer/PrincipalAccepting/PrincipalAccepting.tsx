@@ -102,7 +102,7 @@ const PrincipalAccepting = () => {
           },
         ]}
       >
-        <DatePicker />
+        <DatePicker format={'DD.MM.YYYY'} />
       </Form.Item>
     </Card>
   );

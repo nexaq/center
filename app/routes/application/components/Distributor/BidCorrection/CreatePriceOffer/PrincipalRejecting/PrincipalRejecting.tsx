@@ -76,7 +76,7 @@ const PrincipalRejecting = () => {
           }
         ]}
       >
-        <DatePicker />
+        <DatePicker format={'DD.MM.YYYY'} />
       </Form.Item>
     </Card>
   );

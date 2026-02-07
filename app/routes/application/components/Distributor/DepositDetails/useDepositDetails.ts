@@ -8,7 +8,7 @@ export const useDepositDetails = (onSuccess: () => void) => {
   const queryClient = useQueryClient();
   const { message } = App.useApp();
 
-  return useMutation<void, Error, PostDepositDetailsBody>({
+  return useMutation<void, Error, PostDepositDetailsBody & { isOrganization: boolean }>({
     mutationFn: async (data) => postDepositDetails(Number(id), data),
     onError: () => message.error('Произошла ошибка'),
     onSuccess: () => {

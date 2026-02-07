@@ -55,6 +55,7 @@ export interface ApplicationItem {
   isRejected: boolean;
   userPrice: number | null;
   paymentFile: string | null;
+  paidAt: string | null;
   stepPriceCorrection: number | null;
   returnDepositDetails: ReturnDepositDetails | null;
   depositDetails: DepositDetails | null;

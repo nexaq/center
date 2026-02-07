@@ -64,9 +64,15 @@ export const getAdminStatus = (
   throw Error('not admin status');
 };
 
-export const getList = async (): Promise<ApplicationWithAdminStatus[]> => {
+export const getList = async (paidStatus: 'paid' | 'unPaid'): Promise<ApplicationWithAdminStatus[]> => {
   const { data } = await userApi.get<ApplicationItem[]>('/center/application');
-  return data.map((i) => ({
+  return data.filter(i => {
+    if (paidStatus === 'paid') {
+      return !!i.paidAt;
+    } else {
+      return !i.paidAt;
+    }
+  }).map((i) => ({
     ...i,
     adminStatus: getAdminStatus(i.status, i.moderationStatus),
   }));

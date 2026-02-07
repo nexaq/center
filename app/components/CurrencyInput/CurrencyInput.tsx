@@ -15,7 +15,15 @@ const CurrencyInput = ({
       disabled={disabled}
       value={value}
       onChange={onChange}
-      locales="ru"
+      locales="ru-RU"
+      onPaste={e => {
+        const pasteData = e.clipboardData.getData('text');
+        if (pasteData.includes('.')) {
+          e.preventDefault();
+          const modifiedData = pasteData.replace(/\./g, ',');
+          document.execCommand('insertText', false, modifiedData);
+        }
+      }}
       maximumFractionDigits={2}
       className={
         'ant-input css-dev-only-do-not-override-1odpy5d css-1odpy5d ant-input-outlined'

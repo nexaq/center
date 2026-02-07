@@ -16,7 +16,7 @@ const renderItem = (item: SuggestBankItem) => ({
   ),
 });
 
-const BicInput = memo(({ onSelect, setValue }: { onSelect?: (data: SuggestBankItem) => void, setValue: (v: string) => void }) => {
+const BicInput = memo(({ onSelect, setValue, value }: { onSelect?: (data: SuggestBankItem) => void, setValue: (v: string) => void, value?: string }) => {
   const [options, setOptions] = React.useState<AutoCompleteProps['options']>(
     [],
   );
@@ -29,6 +29,7 @@ const BicInput = memo(({ onSelect, setValue }: { onSelect?: (data: SuggestBankIt
   };
   return (
     <AutoComplete
+      value={value}
       style={{
         width: "100%"
       }}
