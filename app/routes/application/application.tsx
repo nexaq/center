@@ -23,6 +23,7 @@ import { useApplication } from '~/hooks/useApplication/useApplication';
 import Accounts from '~/routes/application/components/Accounts/Accounts';
 import Actions from '~/routes/application/components/Actions/Actions';
 import Documents from "~/routes/application/components/Documents/Documents";
+import {ApplicationLeftBeforeWr} from "~/components/ApplicationLeftBefore/ApplicationLeftBefore";
 
 const { Title } = Typography;
 
@@ -144,6 +145,7 @@ export default function Application() {
         <Navigation />
         <Space direction="vertical" size={14} style={{ width: '100%' }}>
           <Stepper application={application} />
+          <ApplicationLeftBeforeWr application={application} lot={lot} />
           <Space direction={'vertical'} size={2}>
             <div>
               <b>

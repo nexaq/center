@@ -1,8 +1,5 @@
 import { userApi } from '~/api/config';
-import type {
-  ApplicationItem,
-  ApplicationWithAdminStatus,
-} from '~/api/application/types';
+import type { ApplicationWithAdminStatusAndLot } from '~/api/application/types';
 
 export enum ApplicationStatus {
   CHOOSE_PRICE = 'CHOOSE_PRICE',
@@ -64,16 +61,22 @@ export const getAdminStatus = (
   throw Error('not admin status');
 };
 
-export const getList = async (paidStatus: 'paid' | 'unPaid'): Promise<ApplicationWithAdminStatus[]> => {
-  const { data } = await userApi.get<ApplicationItem[]>('/center/application');
-  return data.filter(i => {
-    if (paidStatus === 'paid') {
-      return !!i.paidAt;
-    } else {
-      return !i.paidAt;
-    }
-  }).map((i) => ({
-    ...i,
-    adminStatus: getAdminStatus(i.status, i.moderationStatus),
-  }));
+export const getList = async (
+  paidStatus: 'paid' | 'unPaid',
+): Promise<ApplicationWithAdminStatusAndLot[]> => {
+  const { data } = await userApi.get<ApplicationWithAdminStatusAndLot[]>(
+    '/center/application',
+  );
+  return data
+    .filter((i) => {
+      if (paidStatus === 'paid') {
+        return !!i.paidAt;
+      } else {
+        return !i.paidAt;
+      }
+    })
+    .map((i) => ({
+      ...i,
+      adminStatus: getAdminStatus(i.status, i.moderationStatus),
+    }));
 };

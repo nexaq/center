@@ -9,6 +9,9 @@ import type { ApplicationWithAdminStatus } from '~/api/application/types';
 import { useQuery } from '@tanstack/react-query';
 import { useTableStore } from '~/components/ApplicationTable/tableStore';
 import PayTabs from "~/components/ApplicationTable/Tabs/Tabs";
+import {ApplicationLeftBefore} from "~/components/ApplicationLeftBefore/ApplicationLeftBefore";
+import { ApplicationStatus as ApplicationStatusEnum } from '~/api/application/getList';
+import type {LotSaleStatus} from "~/api/lot/types";
 
 const { Link } = Typography;
 
@@ -19,7 +22,12 @@ interface DataType {
   name: string;
   lot: ReactNode;
   status: ReactNode;
-  left: string;
+  left: {
+    endAt: string,
+    status: ApplicationStatusEnum,
+    lotStatus: LotSaleStatus,
+    paidAt: string | null,
+  };
 }
 
 const LotInfo = ({
@@ -77,7 +85,7 @@ const ApplicationTable = () => {
               key: i.id,
               id: i.id,
               code: i.code,
-              name: i.user.name,
+              name: i.user.name ?? i.user.email,
               lot: <LotInfo application={i} />,
               status: (
                 <ApplicationStatus
@@ -85,7 +93,12 @@ const ApplicationTable = () => {
                   status={i.status}
                 />
               ),
-              left: '2 дня',
+              left: {
+                endAt: i.lot.sale.acceptingApplicationsEndAt,
+                status: i.status,
+                lotStatus: i.lot.status,
+                paidAt: i.paidAt,
+              },
             };
           }) ?? []
         }
@@ -100,6 +113,7 @@ const ApplicationTable = () => {
             title: 'Участник',
             dataIndex: 'name',
             key: 'name',
+            className: st.userCol
           },
           {
             title: 'Лот',
@@ -115,6 +129,7 @@ const ApplicationTable = () => {
             title: 'Осталось',
             dataIndex: 'left',
             key: 'left',
+            render: (v) => <ApplicationLeftBefore status={v.status} endAt={v.endAt} lotStatus={v.lotStatus} paidAt={v.paidAt} />
           },
         ]}
         onRow={(record, rowIndex) => {

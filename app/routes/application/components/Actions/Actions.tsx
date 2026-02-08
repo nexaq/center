@@ -37,7 +37,7 @@ const ViewActions = ({ lot, application }: ActionsProps) => {
   ];
 
   return (
-    <Flex align="flex-start" gap="small">
+    <Flex align="center" gap="small">
       <Dropdown.Button
         menu={{ items }}
         onClick={(e) => {

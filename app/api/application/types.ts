@@ -3,6 +3,7 @@ import {
   ApplicationModerationStatus,
   ApplicationStatus,
 } from '~/api/application/getList';
+import type { LotModel } from '~/api/lot/types';
 
 interface User {
   name: string;
@@ -59,9 +60,13 @@ export interface ApplicationItem {
   stepPriceCorrection: number | null;
   returnDepositDetails: ReturnDepositDetails | null;
   depositDetails: DepositDetails | null;
-  recommendationAcceptanceInfo: RecommendationAcceptanceOfferStatus,
+  recommendationAcceptanceInfo: RecommendationAcceptanceOfferStatus;
 }
 
 export type ApplicationWithAdminStatus = ApplicationItem & {
   adminStatus: ApplicationAdminStatus;
+};
+
+export type ApplicationWithAdminStatusAndLot = ApplicationWithAdminStatus & {
+  lot: LotModel;
 };

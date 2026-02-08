@@ -5,6 +5,19 @@ export type PriceTableItem = {
   deposit: number;
 };
 
+export enum LotSaleStatus {
+  SALE_ANNOUNCED = 'SALE_ANNOUNCED',
+  APPLICATIONS_RECEPTION = 'APPLICATIONS_RECEPTION',
+  APPLICATIONS_RECEPTION_ENDED = 'APPLICATIONS_RECEPTION_ENDED',
+  AUCTION_IS_GOING = 'AUCTION_IS_GOING',
+  SALE_COMPLETED = 'SALE_COMPLETED',
+  SALE_CANCELED = 'SALE_CANCELED',
+  SALE_FAILED = 'SALE_FAILED',
+  SALE_PAUSED = 'SALE_PAUSED',
+  RESULTING = 'RESULTING',
+  PRICE_OFFERS_RECEPTION_DONE = 'PRICE_OFFERS_RECEPTION_DONE',
+}
+
 export type LotModel = {
   id: number;
   createdAt: Date;
@@ -28,6 +41,8 @@ export type LotModel = {
   imagesScanned: string[] | null;
   daysLeft?: number;
   priceTable?: PriceTableItem[];
+
+  status: LotSaleStatus,
 
   sale: SaleDTO;
 
@@ -91,7 +106,7 @@ export type PersonDTO = {
   middleName: string;
   INN: string;
   category: string;
-}
+};
 
 export type OrganizationDTO = {
   INN: string;
@@ -99,7 +114,7 @@ export type OrganizationDTO = {
   fullName: string;
   id: number;
   shortName: string;
-}
+};
 
 export type SaleDTO = {
   id: number;
