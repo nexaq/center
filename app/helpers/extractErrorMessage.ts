@@ -6,3 +6,10 @@ export const extractErrorMessage = (err: AxiosError<any, any>) => {
   }
   return null;
 }
+
+export const extractErrorData = (err: AxiosError<any, any>) => {
+  if (err.response?.data) {
+    return err.response?.data;
+  }
+  return null;
+}

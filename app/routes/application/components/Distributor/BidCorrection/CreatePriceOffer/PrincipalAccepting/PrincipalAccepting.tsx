@@ -1,11 +1,12 @@
 import { Card, DatePicker, Form, Input } from 'antd';
 import { unformat } from '@react-input/number-format';
 import CurrencyInput from '~/components/CurrencyInput/CurrencyInput';
-import React, { useContext } from 'react';
+import React from 'react';
 import dayjs, { type Dayjs } from 'dayjs';
 import { PURPOSE_RULES } from '~/routes/application/components/Distributor/BidCorrection/CreatePriceOffer/purpose.rules';
+import { type LotModel, SaleType } from '~/api/lot/types';
 
-const PrincipalAccepting = () => {
+const PrincipalAccepting = ({ lot }: { lot: LotModel }) => {
   const form = Form.useFormInstance();
 
   return (
@@ -37,7 +38,9 @@ const PrincipalAccepting = () => {
         ]}
       >
         {/*@ts-ignore*/}
-        <CurrencyInput />
+        <CurrencyInput
+          onChange={() => form.validateFields(['depositAccepted'])}
+        />
       </Form.Item>
       <Form.Item
         name={'depositAccepted'}
@@ -58,6 +61,15 @@ const PrincipalAccepting = () => {
               ) as number;
               const current = Number(unformat(value));
 
+              if (
+                lot.sale.type === SaleType.AUCTION &&
+                depositRejected !== current
+              ) {
+                return Promise.reject(
+                  'В аукционе задатки должны быть одинаковы',
+                );
+              }
+
               if (current < depositRejected) {
                 return Promise.reject(
                   'Должно быть больше чем "задаток принципала"',
@@ -74,7 +86,9 @@ const PrincipalAccepting = () => {
         ]}
       >
         {/*@ts-ignore*/}
-        <CurrencyInput />
+        <CurrencyInput
+          onChange={() => form.validateFields(['priceAccepted'])}
+        />
       </Form.Item>
       <Form.Item
         name={'purposeAccepted'}

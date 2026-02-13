@@ -20,7 +20,7 @@ const TimeLeft = memo(
     const hot = diff < 3 * 24 * 60 * 60 * 1000;
     const label = (text: string) => (
       <Flex gap={8}>
-        <div>Осталось:</div>
+        {showLeftText && <div>Осталось:</div>}
         <Typography.Text
           type={hot ? 'danger' : warm ? 'warning' : undefined}
           strong
@@ -61,7 +61,7 @@ const TimeLeft = memo(
 const TimeLeft2 = memo(({ endAt }: { endAt: Dayjs }) => {
   const now = dayjs();
 
-  const diff = endAt.diff(now);
+  const diff = endAt.add(24, 'hours').diff(now);
   const diffDays = diff / 1000 / 60 / 60 / 24;
   const diffHours = diff / 1000 / 60 / 60;
   const diffMinutes = diff / 1000 / 60;
@@ -71,14 +71,21 @@ const TimeLeft2 = memo(({ endAt }: { endAt: Dayjs }) => {
       <Typography.Text strong type={'danger'}>
         Успей проверить
       </Typography.Text>
-      <Tag color={'red-inverse'} icon={<ClockCircleOutlined />}>
+      <Tag color={'red'} icon={<ClockCircleOutlined />}>
         {text}
       </Tag>
     </Flex>
   );
 
   if (diffDays < 0) {
-    return <Tag color={'red-inverse'}>Время вышло</Tag>;
+    return <Flex vertical={true} align={'flex-start'} gap={2}>
+        <Typography.Text strong type={'danger'}>
+            Срочно проверь
+        </Typography.Text>
+        <Tag color={'red'} icon={<ClockCircleOutlined />}>
+            Время вышло
+        </Tag>
+    </Flex>;
   }
 
   if (diffDays >= 1) {
@@ -163,6 +170,7 @@ export const ApplicationLeftBeforeWr = ({
           lotStatus={lot.status}
           status={application.status}
           paidAt={application.paidAt}
+          showLeftText={true}
         />
       </div>
     </Flex>

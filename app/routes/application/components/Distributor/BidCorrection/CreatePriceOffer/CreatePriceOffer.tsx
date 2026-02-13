@@ -8,11 +8,11 @@ import type { LotModel } from '~/api/lot/types';
 import { canCreateRecommendation } from '~/routes/application/helpers/canCreateRecommendation';
 import type { PostDepositDetailsBodyForm } from '~/routes/application/components/Distributor/DepositDetails/types';
 
-const CreatePriceOfferForm = () => {
+const CreatePriceOfferForm = ({ lot }: { lot: LotModel }) => {
   return (
     <Flex gap={8} justify={'stretch'} vertical={true}>
       <Flex gap={8}>
-        <PrincipalAccepting />
+        <PrincipalAccepting lot={lot} />
         <PrincipalRejecting />
       </Flex>
       <Card title={'Комментарий'} style={{ width: '100%' }}>
@@ -75,7 +75,7 @@ const CreatePriceOffer = ({
             <PrincipalRejecting />
           </Flex>
         )}
-        {shouldCreate && <CreatePriceOfferForm />}
+        {shouldCreate && <CreatePriceOfferForm lot={lot} />}
       </Flex>
     </div>
   );

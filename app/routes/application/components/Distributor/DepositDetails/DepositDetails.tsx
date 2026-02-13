@@ -11,6 +11,7 @@ import type { LotModel } from '~/api/lot/types';
 import { canCreateRecommendation } from '~/routes/application/helpers/canCreateRecommendation';
 import type { PostDepositDetailsBodyForm } from '~/routes/application/components/Distributor/DepositDetails/types';
 import { NO_SPEC_RULE } from '~/routes/application/components/Distributor/DepositDetails/rules';
+import StepPriceErrorModal from '~/routes/application/components/Distributor/DepositDetails/StepPriceErrorModal/StepPriceErrorModal';
 
 export const ConfirmModal = ({
   open,
@@ -52,7 +53,22 @@ const DepositDetails = ({
   const isOrganization = Form.useWatch('isOrganization', form);
 
   const [open, setOpen] = useState(false);
-  const { isPending, mutate } = useDepositDetails(() => setOpen(false));
+  const [wrongPriceOpen, setWrongPriceOpen] = useState(false);
+  const [wrongPriceProps, setWrongPriceProps] = useState<
+    | {
+        stepPrice: number;
+        max: number;
+        min: number;
+      }
+    | undefined
+  >();
+
+  const { isPending, mutate } = useDepositDetails(
+    () => setOpen(false),
+    () => setOpen(false),
+    setWrongPriceProps,
+    setWrongPriceOpen,
+  );
 
   useEffect(() => {
     if (isOrganization === 'me') {
@@ -145,6 +161,26 @@ const DepositDetails = ({
     ]);
   }, [isOrganization]);
 
+  const realMutate = ({ replacePrice }: { replacePrice?: number }) => {
+    const values = form.getFieldsValue();
+    mutate({
+      ...values,
+      depositAccepted: values.depositAccepted
+        ? unformatIfString(values.depositAccepted)
+        : undefined,
+      depositRejected: unformatIfString(values.depositRejected),
+      priceAccepted:
+        replacePrice ??
+        (values.priceAccepted
+          ? unformatIfString(values.priceAccepted)
+          : undefined),
+      priceRejected: unformatIfString(values.priceRejected),
+      depositBeforeAccepted: values.depositBeforeAccepted?.toISOString(),
+      depositBeforeRejected: values.depositBeforeRejected.toISOString(),
+      isOrganization: isOrganization === 'me' ? false : isOrganization,
+    });
+  };
+
   return (
     <Form
       layout={'vertical'}
@@ -194,7 +230,7 @@ const DepositDetails = ({
                   <Input />
                 </Form.Item>
               )}
-              {(isOrganization === true) && (
+              {isOrganization === true && (
                 <>
                   <Form.Item
                     name={'inn'}
@@ -372,26 +408,20 @@ const DepositDetails = ({
               setOpen={setOpen}
               open={open}
               onOk={() => {
-                const values = form.getFieldsValue();
-                mutate({
-                  ...values,
-                  depositAccepted: values.depositAccepted
-                    ? unformatIfString(values.depositAccepted)
-                    : undefined,
-                  depositRejected: unformatIfString(values.depositRejected),
-                  priceAccepted: values.priceAccepted
-                    ? unformatIfString(values.priceAccepted)
-                    : undefined,
-                  priceRejected: unformatIfString(values.priceRejected),
-                  depositBeforeAccepted:
-                    values.depositBeforeAccepted?.toISOString(),
-                  depositBeforeRejected:
-                    values.depositBeforeRejected.toISOString(),
-                  isOrganization: isOrganization === 'me' ? false : isOrganization,
-                });
+                realMutate({});
               }}
               loading={isPending}
             />
+            {wrongPriceProps && (
+              <StepPriceErrorModal
+                isPending={isPending}
+                realMutate={realMutate}
+                wrongPriceOpen={wrongPriceOpen}
+                setWrongPriceOpen={setWrongPriceOpen}
+                min={wrongPriceProps.min}
+                max={wrongPriceProps.max}
+              />
+            )}
           </Flex>
         </Card>
       </Flex>

@@ -1,6 +1,8 @@
 import { Card, Descriptions, Space, Typography } from 'antd';
 import React from 'react';
-import type { ApplicationWithAdminStatus } from '~/api/application/types';
+import {
+  type ApplicationWithAdminStatus,
+} from '~/api/application/types';
 import type { LotModel } from '~/api/lot/types';
 import formatNumber from '~/helpers/formatNumber';
 import PriceDescription from '~/routes/application/components/PriceDescription/PriceDescription';
@@ -63,10 +65,7 @@ const LotInfo = ({
               <Link
                 onClick={(e) => {
                   e.preventDefault();
-                  window.open(
-                    lot.platformLotLink,
-                    '_blank',
-                  );
+                  window.open(lot.platformLotLink, '_blank');
                 }}
                 style={{ fontWeight: 500 }}
               >
@@ -106,9 +105,7 @@ const LotInfo = ({
       <Card>
         <Space direction={'vertical'} size={30}>
           <Descriptions title="Описание" column={1}>
-            <Descriptions.Item>
-              {lot.subject}
-            </Descriptions.Item>
+            <Descriptions.Item>{lot.subject}</Descriptions.Item>
           </Descriptions>
         </Space>
       </Card>

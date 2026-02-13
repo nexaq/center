@@ -43,7 +43,7 @@ const PriceDescription = ({
       )}
       {application.userPrice && (
         <Descriptions.Item label={<LabelWithCheckbox label={"Цена принципала"} />}>
-          <WantPrice lot={lot} application={application} />
+          <WantPrice application={application} />
         </Descriptions.Item>
       )}
     </Descriptions>

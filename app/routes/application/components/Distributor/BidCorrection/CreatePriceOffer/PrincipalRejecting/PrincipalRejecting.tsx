@@ -38,6 +38,7 @@ const PrincipalRejecting = () => {
               const priceRejected = Number(unformat(form.getFieldValue('priceRejected'))) as number;
               const current = Number(unformat(value));
 
+
               if (current > priceRejected) {
                 return Promise.reject('Должно быть меньше чем цена');
               }
@@ -48,7 +49,7 @@ const PrincipalRejecting = () => {
         ]}
       >
         {/*@ts-ignore*/}
-        <CurrencyInput />
+        <CurrencyInput onChange={() => form.validateFields(['depositAccepted'])} />
       </Form.Item>
       <Form.Item
         name={'purposeRejected'}

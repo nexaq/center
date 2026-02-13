@@ -1,11 +1,14 @@
-import type { LotModel } from '~/api/lot/types';
 import React from 'react';
 import formatNumber from '~/helpers/formatNumber';
 import Editable from '~/routes/application/components/Review/Editable/Editable';
-import type { ApplicationWithAdminStatus } from '~/api/application/types';
+import {
+  type ApplicationWithAdminStatus,
+  RecommendationAcceptanceOfferStatus,
+} from '~/api/application/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { bidCorrections } from '~/api/application/bidCorrection';
 import { unformat } from '@react-input/number-format';
+import { ApplicationStatus } from '~/api/application/getList';
 
 export function EditStepPrice({
   application,
@@ -105,33 +108,33 @@ export function EditStepPrice({
 
 export const WantPrice = ({
   application,
-  lot,
 }: {
   application: ApplicationWithAdminStatus;
-  lot: LotModel;
 }) => {
-  if (lot.sale.type === 'PUBLIC_OFFER') {
-    return formatNumber(application.userPrice as number);
+  if (
+    application.status === ApplicationStatus.PAY_AGENT ||
+    application.status === ApplicationStatus.MODERATION
+  ) {
+    return;
   }
 
-  const stepPrice = application.stepPriceCorrection ?? lot.stepPrice;
-  const userPrice = application.userPrice as number;
-
-  const remainder = userPrice % stepPrice;
-  const stepPriceHalf = stepPrice / 2;
-  const addAtEnd = remainder >= stepPriceHalf ? stepPrice : 0;
-  const base = Math.floor(userPrice / stepPrice) * stepPrice;
-  const result = base + addAtEnd;
-  const endResult = result === 0 ? stepPrice : result;
-
-  if (endResult === application.userPrice) {
-    return formatNumber(application.userPrice);
-  } else {
-    return (
-      <>
-        <del>{formatNumber(application.userPrice as number)}</del>{' '}
-        <strong style={{ marginLeft: 6 }}>{formatNumber(endResult)}</strong>
-      </>
-    );
+  if (
+    application.recommendationAcceptanceInfo ===
+    RecommendationAcceptanceOfferStatus.IS_CONSIDERING
+  ) {
+    return <>Пока думает</>;
   }
+
+  if (
+    application.recommendationAcceptanceInfo ===
+    RecommendationAcceptanceOfferStatus.ACCEPTED
+  ) {
+    return <>{application.recommendation?.priceAccepted && formatNumber(application.recommendation.priceAccepted)}</>
+  }
+
+  return (
+    <>
+      <>{formatNumber(application.userPrice as number)}</>
+    </>
+  );
 };

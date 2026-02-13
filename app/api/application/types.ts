@@ -61,6 +61,22 @@ export interface ApplicationItem {
   returnDepositDetails: ReturnDepositDetails | null;
   depositDetails: DepositDetails | null;
   recommendationAcceptanceInfo: RecommendationAcceptanceOfferStatus;
+  recommendation?: {
+    isActive: boolean
+    endsAt: string
+    comment: string
+    createdAt: string
+    applicationId: number
+    priceAccepted: number
+    priceRejected: number
+    depositAccepted: number
+    depositRejected: number
+    purposeAccepted: string
+    purposeRejected: string
+    depositBeforeAccepted: string
+    depositBeforeRejected: string
+    left: number
+  }
 }
 
 export type ApplicationWithAdminStatus = ApplicationItem & {
