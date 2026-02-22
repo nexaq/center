@@ -96,6 +96,9 @@ const LotInfo = ({
             <Descriptions.Item label="Дело">
               {lot.sale.caseNumber}
             </Descriptions.Item>
+            <Descriptions.Item label="Начало торгов">
+              {lot.sale.beginAt_formatted}
+            </Descriptions.Item>
           </Descriptions>
         </Space>
       </Card>

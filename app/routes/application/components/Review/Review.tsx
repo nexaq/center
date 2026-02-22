@@ -63,27 +63,24 @@ const Review = ({
               <Descriptions.Item label={<LabelWithCheckbox label={'Регион'} />}>
                 {lot.trueRegion}
               </Descriptions.Item>
+              <Descriptions.Item label={<LabelWithCheckbox label={'Номер лота'} />}>
+                {lot.number}
+              </Descriptions.Item>
               <Descriptions.Item label={<LabelWithCheckbox label={'Начало приёма заявок'} />}>
                 {lot.sale.acceptingApplicationsStartAt_formatted}
-              </Descriptions.Item>
-              <Descriptions.Item label={<LabelWithCheckbox label={'Суд'} />}>
-                {lot.sale.arbitrationCourt}
               </Descriptions.Item>
               <Descriptions.Item label={<LabelWithCheckbox label={'Конец приёма заявок'} />}>
                 {lot.sale.acceptingApplicationsEndAt_formatted}
               </Descriptions.Item>
-              <Descriptions.Item label={<LabelWithCheckbox label={'Дело'} />}>
-                {lot.sale.caseNumber}
-              </Descriptions.Item>
-              <Descriptions.Item label={<LabelWithCheckbox label={'Номер лота'} />}>
-                {lot.number}
+              <Descriptions.Item label={<LabelWithCheckbox label={'Начало торгов'} />}>
+                {lot.sale.beginAt_formatted}
               </Descriptions.Item>
             </Descriptions>
           </Space>
         </Card>
         <Card>
           <Space direction={'vertical'} size={30}>
-            <PriceDescription lot={lot} application={application} />
+            <PriceDescription showPrincipalPrice={false} lot={lot} application={application} />
           </Space>
         </Card>
         {lot.sale.type === 'PUBLIC_OFFER' && (

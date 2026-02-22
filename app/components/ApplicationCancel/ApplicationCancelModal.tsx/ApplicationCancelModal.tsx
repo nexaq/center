@@ -58,10 +58,12 @@ const ApplicationCancelModal = ({
       title="Отклонить заявку"
       open={open}
       onOk={() => {
-        console.log('CUNT');
         form.submit();
       }}
-      onCancel={() => setOpen(false)}
+      onCancel={() => {
+        setOpen(false);
+        setTimeout(() => form.resetFields(), 300)
+      }}
       okText="Подтвердить"
       cancelText="Отмена"
     >
@@ -80,22 +82,22 @@ const ApplicationCancelModal = ({
           });
         }}
       >
-        <Form.Item label="Шаблон" name="template">
-          <Select
-            style={{ width: '100%' }}
-            options={[
-              { value: 'jack', label: 'Jack' },
-              { value: 'lucy', label: 'Lucy' },
-              { value: 'Yiminghe', label: 'yiminghe' },
-            ]}
-          />
-        </Form.Item>
         <Form.Item
           label="Причина"
           name="reason"
-          rules={[{ required: true, message: 'Обязательное поле' }]}
+          rules={[
+            { required: true, message: 'Обязательное поле' },
+            {
+              min: 8,
+            },
+          ]}
+          initialValue={
+            'К сожалению кто-то раньше вас оплатил за участие в торгах по данному лоту. Мы не вправе участвовать в торгах в интересах нескольких лиц по одному лоту.\n' +
+            '\n' +
+            'Денежные средства, уплаченные за агентское вознаграждение, будут возвращены на счет, с которого была произведена оплата.'
+          }
         >
-          <TextArea maxLength={5000} showCount />
+          <TextArea maxLength={5000} showCount autoSize={true} />
         </Form.Item>
       </Form>
     </Modal>

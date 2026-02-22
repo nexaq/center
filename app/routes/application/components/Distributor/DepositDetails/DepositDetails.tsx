@@ -107,11 +107,11 @@ const DepositDetails = ({
         },
         {
           name: 'purposeAccepted',
-          value: `Заявка № ${application.code}`,
+          value: `Внесение задатка по заявке № ${application.code}`,
         },
         {
           name: 'purposeRejected',
-          value: `Заявка № ${application.code}`,
+          value: `Внесение задатка по заявке № ${application.code}`,
         },
       ]);
       return;

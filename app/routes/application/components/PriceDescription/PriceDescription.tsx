@@ -14,10 +14,12 @@ const PriceDescription = ({
   lot,
   title,
   application,
+  showPrincipalPrice = true
 }: {
   lot: LotModel;
   title?: string;
   application: ApplicationWithAdminStatus;
+  showPrincipalPrice?: boolean
 }) => {
   return (
     <Descriptions title={title ?? 'Стоимость'} column={2}>
@@ -41,7 +43,7 @@ const PriceDescription = ({
           />
         </Descriptions.Item>
       )}
-      {application.userPrice && (
+      {application.userPrice && showPrincipalPrice && (
         <Descriptions.Item label={<LabelWithCheckbox label={"Цена принципала"} />}>
           <WantPrice application={application} />
         </Descriptions.Item>

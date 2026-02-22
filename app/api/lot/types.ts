@@ -124,6 +124,8 @@ export type SaleDTO = {
   acceptingApplicationsEndAt: string;
   acceptingApplicationsStartAt_formatted: string;
   acceptingApplicationsEndAt_formatted: string;
+  beginAt_formatted: string;
+  finishAt_formatted: string;
   EFRSBPublishedAt: string;
   EFRSBPublishedAt_formatted: string;
   caseNumber: string;
