@@ -24,23 +24,25 @@ const AccountInfo = ({
           </Descriptions.Item>
         </Descriptions>
       </Card>
-      <Card>
-        <Descriptions title="Паспорт" column={2}>
-          <Descriptions.Item label="Имя">
-            {application.p2?.lastName} {application.p2?.firstName}{' '}
-            {application.p2?.thirdName}
-          </Descriptions.Item>
-          <Descriptions.Item label="Адрес">
-            123456, Россия, г. Москва, ул. Тверская, д. 1, корп. 2, кв. 5.
-          </Descriptions.Item>
-          <Descriptions.Item label="Серия и номер">
-            77 88 157444
-          </Descriptions.Item>
-          <Descriptions.Item label="Дата рождения">
-            01.06.1995
-          </Descriptions.Item>
-        </Descriptions>
-      </Card>
+      {application.p2 && (
+        <Card>
+          <Descriptions title="Паспорт" column={2}>
+            <Descriptions.Item label="Имя">
+              {application.p2?.lastName} {application.p2?.firstName}{' '}
+              {application.p2?.thirdName}
+            </Descriptions.Item>
+            <Descriptions.Item label="Адрес">
+              {application.p2?.address}
+            </Descriptions.Item>
+            <Descriptions.Item label="Серия и номер">
+              {application.p2?.seriesNumber}
+            </Descriptions.Item>
+            <Descriptions.Item label="Дата рождения">
+              {application.p2?.birthday}
+            </Descriptions.Item>
+          </Descriptions>
+        </Card>
+      )}
     </Flex>
   );
 };
