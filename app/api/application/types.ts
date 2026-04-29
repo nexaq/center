@@ -40,6 +40,18 @@ export enum RecommendationAcceptanceOfferStatus {
   IS_CONSIDERING = 'IS_CONSIDERING',
 }
 
+type P2 = {
+  address: string;
+  birthday: string;
+  departmentCode: string;
+  firstName: string;
+  givenByWhom: string;
+  issueDate: string;
+  lastName: string;
+  seriesNumber: string;
+  thirdName: string;
+};
+
 export interface ApplicationItem {
   id: number;
   userId: number;
@@ -48,7 +60,7 @@ export interface ApplicationItem {
   title: string;
   status: ApplicationStatus;
   user: User;
-  p2: string | null;
+  p2: P2 | null;
   code: string;
   saleNumber: string;
   moderationStatus: ApplicationModerationStatus;
@@ -62,21 +74,21 @@ export interface ApplicationItem {
   depositDetails: DepositDetails | null;
   recommendationAcceptanceInfo: RecommendationAcceptanceOfferStatus;
   recommendation?: {
-    isActive: boolean
-    endsAt: string
-    comment: string
-    createdAt: string
-    applicationId: number
-    priceAccepted: number
-    priceRejected: number
-    depositAccepted: number
-    depositRejected: number
-    purposeAccepted: string
-    purposeRejected: string
-    depositBeforeAccepted: string
-    depositBeforeRejected: string
-    left: number
-  }
+    isActive: boolean;
+    endsAt: string;
+    comment: string;
+    createdAt: string;
+    applicationId: number;
+    priceAccepted: number;
+    priceRejected: number;
+    depositAccepted: number;
+    depositRejected: number;
+    purposeAccepted: string;
+    purposeRejected: string;
+    depositBeforeAccepted: string;
+    depositBeforeRejected: string;
+    left: number;
+  };
 }
 
 export type ApplicationWithAdminStatus = ApplicationItem & {

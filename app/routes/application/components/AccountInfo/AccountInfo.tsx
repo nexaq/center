@@ -1,9 +1,8 @@
-import st from './AccountInfo.module.scss';
-import {Alert, Card, Descriptions, Flex} from 'antd';
+import { Card, Descriptions, Flex } from 'antd';
 import React from 'react';
 import type { ApplicationWithAdminStatus } from '~/api/application/types';
-import dayjs from "dayjs";
-import {CopyableValue} from "~/routes/application/components/Accounts/Accounts";
+import dayjs from 'dayjs';
+import { CopyableValue } from '~/routes/application/components/Accounts/Accounts';
 
 const AccountInfo = ({
   application,
@@ -28,7 +27,8 @@ const AccountInfo = ({
       <Card>
         <Descriptions title="Паспорт" column={2}>
           <Descriptions.Item label="Имя">
-            МАРИЯ ИВАНОВА АНТОНОВНА
+            {application.p2?.lastName} {application.p2?.firstName}{' '}
+            {application.p2?.thirdName}
           </Descriptions.Item>
           <Descriptions.Item label="Адрес">
             123456, Россия, г. Москва, ул. Тверская, д. 1, корп. 2, кв. 5.
